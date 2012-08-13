@@ -395,14 +395,16 @@ EOT
 
 	public static function on_view_render(Event $event, \Icybee\Views\View $view)
 	{
+		global $core;
+
 		if ($event->id != 'articles/view')
 		{
 			return;
 		}
 
-		$list = \view_WdEditorElement::render('comments/list');
-
-		$submit = \view_WdEditorElement::render('comments/submit');
+		$editor = $core->editors['view'];
+		$list = $editor->render('comments/list');
+		$submit = $editor->render('comments/submit');
 
 		$event->rc .= PHP_EOL . $list . PHP_EOL . $submit;
 	}

@@ -40,11 +40,6 @@ class Module extends \Icybee\Module
 			$score -= 5;
 		}
 
-		if (in_array($author, self::$spam_score_keywords))
-		{
-			$score -= 1;
-		}
-
 		return $score;
 	}
 
