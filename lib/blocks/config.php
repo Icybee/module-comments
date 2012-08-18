@@ -18,7 +18,7 @@ use Brickrouge\Text;
 
 class ConfigBlock extends \Icybee\ConfigBlock
 {
-	protected function alter_attributes(array $attributes)
+	protected function get_attributes()
 	{
 		global $core;
 
@@ -35,7 +35,7 @@ class ConfigBlock extends \Icybee\ConfigBlock
 
 		return \ICanBoogie\array_merge_recursive
 		(
-			parent::alter_attributes($attributes), array
+			parent::get_attributes(), array
 			(
 				Form::VALUES => array
 				(
@@ -65,7 +65,7 @@ class ConfigBlock extends \Icybee\ConfigBlock
 		);
 	}
 
-	protected function alter_children(array $children, array &$properties, array &$attributes)
+	protected function get_children()
 	{
 		global $core;
 
@@ -73,7 +73,7 @@ class ConfigBlock extends \Icybee\ConfigBlock
 
 		return array_merge
 		(
-			parent::alter_children($children, $properties, $attributes), array
+			parent::get_children(), array
 			(
 				"local[$ns.form_id]" => new \WdFormSelectorElement
 				(

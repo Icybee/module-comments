@@ -22,8 +22,10 @@ use Brickrouge\Text;
  */
 class EditBlock extends \Icybee\EditBlock
 {
-	protected function alter_children(array $children, array &$properties, array &$attributes)
+	protected function get_children()
 	{
+		$values = $this->values;
+
 		return array
 		(
 			Comment::AUTHOR => new Text
@@ -89,7 +91,7 @@ class EditBlock extends \Icybee\EditBlock
 						'done' => 'Notification envoyée'
 					),
 
-					Element::DESCRIPTION => (($properties[Comment::NOTIFY] == 'done') ? "Un
+					Element::DESCRIPTION => (($vaules[Comment::NOTIFY] == 'done') ? "Un
 					message de notification a été envoyé." : null),
 
 					'class' => 'inputs-list'
