@@ -12,6 +12,7 @@
 namespace ICanBoogie\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Comment;
+use ICanBoogie\ActiveRecord\RecordNotFound;
 use ICanBoogie\Exception;
 use ICanBoogie\Mailer;
 use ICanBoogie\Operation;
@@ -75,7 +76,7 @@ class SaveOperation extends \Icybee\SaveOperation
 			{
 				$node = $core->models['nodes'][$nid];
 			}
-			catch (Exception\MissingRecord $e)
+			catch (RecordNotFound $e)
 			{
 				$errors[Comment::NID] = t('Invalid node identifier: %nid', array('nid' => $nid));
 

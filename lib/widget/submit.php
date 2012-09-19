@@ -106,6 +106,8 @@ class feedback_comments_WdForm extends Form
 						)
 					),
 
+					Element::WIDGET_CONSTRUCTOR => 'SubmitComment',
+
 					'action' => '#view-comments-submit',
 					'class' => 'widget-submit-comment'
 				)

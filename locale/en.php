@@ -8,7 +8,7 @@ return array
 		(
 			'one' => 'One comment',
 			'other' => ':count comments',
-			'none' => 'No comments'
+			'none' => 'No comment'
 		),
 
 		'delete' => array

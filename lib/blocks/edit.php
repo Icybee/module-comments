@@ -91,7 +91,7 @@ class EditBlock extends \Icybee\EditBlock
 						'done' => 'Notification envoyée'
 					),
 
-					Element::DESCRIPTION => (($vaules[Comment::NOTIFY] == 'done') ? "Un
+					Element::DESCRIPTION => (($values[Comment::NOTIFY] == 'done') ? "Un
 					message de notification a été envoyé." : null),
 
 					'class' => 'inputs-list'

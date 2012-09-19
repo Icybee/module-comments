@@ -11,7 +11,6 @@
 
 namespace ICanBoogie\ActiveRecord;
 
-use ICanBoogie\ActiveRecord;
 use Textmark_Parser;
 
 /**
@@ -25,7 +24,7 @@ use Textmark_Parser;
  * @property ActiveRecord\Node $node The node the comment is attached to.
  * @property string $url URL of the comment relative to the website.
  */
-class Comment extends ActiveRecord
+class Comment extends \ICanBoogie\ActiveRecord
 {
 	const COMMENTID = 'commentid';
 	const NID = 'nid';

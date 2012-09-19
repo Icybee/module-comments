@@ -40,12 +40,12 @@
 	content: ', ';
 }
 
-#view-comments-list .contents
+#view-comments-list .comment-content
 {
 	margin-left: 80px;
 }
 
-#view-comments-list div.comment + div.comment
+#view-comments-list .comment + .comment
 {
 	margin-top: 2em;
 	border-top: 1px dashed #ccc;
