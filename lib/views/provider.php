@@ -13,7 +13,7 @@ namespace ICanBoogie\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Query;
 
-class Provider extends \Icybee\Views\ActiveRecord\Provider
+class Provider extends \Icybee\Modules\Views\ActiveRecordProvider
 {
 	protected function alter_conditions(array $conditions)
 	{

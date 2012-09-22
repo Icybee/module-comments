@@ -393,7 +393,7 @@ EOT
 		return $template ? $patron($template, $form) : $form;
 	}
 
-	public static function on_view_render(Event $event, \Icybee\Views\View $view)
+	public static function on_view_render(Event $event, \Icybee\Modules\Views\View $view)
 	{
 		global $core;
 

@@ -54,14 +54,14 @@ class Module extends \Icybee\Module
 				'title' => "Comments associated to a node",
 				'assets' => $assets,
 				'provider' => 'ICanBoogie\Modules\Comments\Provider',
-				'renders' => \Icybee\Views\View::RENDERS_MANY
+				'renders' => \Icybee\Modules\Views\View::RENDERS_MANY
 			),
 
 			'submit' => array
 			(
 				'title' => "Comment submit form",
 				'assets' => $assets,
-				'renders' => \Icybee\Views\View::RENDERS_OTHER
+				'renders' => \Icybee\Modules\Views\View::RENDERS_OTHER
 			)
 		);
 	}
