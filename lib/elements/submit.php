@@ -9,15 +9,27 @@
  * file that was distributed with this source code.
  */
 
-use ICanBoogie\ActiveRecord\Comment;
+namespace Icybee\Modules\Comments;
+
 use ICanBoogie\Operation;
+
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
 
-class feedback_comments_WdForm extends Form
+/**
+ * The form used to submit comments.
+ */
+class SubmitForm extends Form
 {
-	public function __construct(array $tags=array(), $dummy=null)
+	static protected function add_assets(\Brickrouge\Document $document)
+	{
+		parent::add_assets($document);
+
+		$document->js->add('submit.js');
+	}
+
+	public function __construct(array $attributes=array())
 	{
 		global $core;
 
@@ -35,7 +47,7 @@ class feedback_comments_WdForm extends Form
 		(
 			\ICanBoogie\array_merge_recursive
 			(
-				$tags, array
+				$attributes, array
 				(
 					Form::RENDERER => 'Simple',
 					Form::VALUES => $values,
@@ -52,8 +64,7 @@ class feedback_comments_WdForm extends Form
 							array
 							(
 								Element::LABEL => 'Name',
-								Element::REQUIRED => true,
-// 								'readonly' => $is_member
+								Element::REQUIRED => true
 							)
 						),
 
@@ -63,8 +74,7 @@ class feedback_comments_WdForm extends Form
 							(
 								Element::LABEL => 'E-mail',
 								Element::REQUIRED => true,
-								Element::VALIDATOR => array('Brickrouge\Form::validate_email'),
-// 								'readonly' => $is_member
+								Element::VALIDATOR => array('Brickrouge\Form::validate_email')
 							)
 						),
 
@@ -82,6 +92,8 @@ class feedback_comments_WdForm extends Form
 							(
 								Element::REQUIRED => true,
 								Element::LABEL_MISSING => 'Message',
+
+								'class' => 'span6',
 								'rows' => 8
 							)
 						),
@@ -117,28 +129,11 @@ class feedback_comments_WdForm extends Form
 		);
 	}
 
-	public function __toString()
+	public function alter_notify(\Icybee\Modules\Forms\NotifyParams $properties)
 	{
 		global $core;
 
-		$core->document->js->add('submit.js');
-
-		return parent::__toString();
-	}
-
-	public function alter_notify($properties)
-	{
-		global $core;
-
-		$comment = $core->models['comments'][$properties->rc['key']];
-
-		#
-		# if the comment is approved we change the location to the comment location, otherwise
-		# the location is changed to the location of the form element.
-		#
-
-// 		$operation->location = ($comment->status == 'approved') ? $comment->url : $_SERVER['REQUEST_URI'] . '#' . $operation->record->slug;
-		$properties->bind = $comment;
+		$properties->bind = $core->models['comments'][$properties->rc['key']];
 	}
 
 	static public function get_defaults()

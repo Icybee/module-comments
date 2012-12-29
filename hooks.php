@@ -9,11 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Modules\Comments;
+namespace Icybee\Modules\Comments;
 
-use ICanBoogie;
-use ICanBoogie\ActiveRecord\Node;
-use ICanBoogie\ActiveRecord\Comment;
+use Icybee\Modules\Nodes\Node;
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
 use ICanBoogie\Operation;
@@ -24,7 +22,11 @@ use Brickrouge\Text;
 
 class Hooks
 {
-	public static function before_node_save(Event $event, \ICanBoogie\Modules\Nodes\SaveOperation $sender)
+	/*
+	 * Events
+	 */
+
+	static public function before_node_save(Operation\BeforeProcessEvent $event, \Icybee\Modules\Nodes\SaveOperation $sender)
 	{
 		$request = $event->request;
 
@@ -44,10 +46,10 @@ class Hooks
 	/**
 	 * Deletes all the comments attached to a node.
 	 *
-	 * @param Event $event
-	 * @param ICanBoogie\Modules\Nodes\DeleteOperation $sender
+	 * @param Operation\ProcessEvent $event
+	 * @param Icybee\Modules\Nodes\DeleteOperation $sender
 	 */
-	public static function on_node_delete(Event $event, \ICanBoogie\Modules\Nodes\DeleteOperation $sender)
+	static public function on_node_delete(Operation\ProcessEvent $event, \Icybee\Modules\Nodes\DeleteOperation $operation)
 	{
 		global $core;
 
@@ -60,7 +62,7 @@ class Hooks
 			return;
 		}
 
-		$ids = $model->select('{primary}')->where('nid = ?', $sender->key)->all(\PDO::FETCH_COLUMN);
+		$ids = $model->select('{primary}')->filter_by_nid($operation->key)->all(\PDO::FETCH_COLUMN);
 
 		foreach ($ids as $commentid)
 		{
@@ -68,7 +70,7 @@ class Hooks
 		}
 	}
 
-	public static function alter_block_edit(Event $event)
+	static public function alter_block_edit(Event $event)
 	{
 		global $core;
 
@@ -91,7 +93,7 @@ class Hooks
 			);
 		}
 
-		$ns = wd_entities($metas_prefix);
+		$ns = \ICanBoogie\escape($metas_prefix);
 
 		$event->tags = \ICanBoogie\array_merge_recursive
 		(
@@ -173,34 +175,183 @@ EOT
 		);
 	}
 
-	public static function get_comments(Node $ar)
+	static public function on_view_render(Event $event, \Icybee\Modules\Views\View $view)
+	{
+		global $core;
+
+		if ($event->id != 'articles/view')
+		{
+			return;
+		}
+
+		$editor = $core->editors['view'];
+		$list = $editor->render('comments/list');
+		$submit = $editor->render('comments/submit');
+
+		$event->rc .= PHP_EOL . $list . PHP_EOL . $submit;
+	}
+
+	/*
+	 * Prototype
+	 */
+
+	/**
+	 * Returns the comments associated with a node.
+	 *
+	 * @param Node $ar
+	 *
+	 * @return array[]Node
+	 */
+	static public function get_comments(Node $ar)
 	{
 		global $core;
 
 		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->order('created')->all;
 	}
 
-	public static function get_comments_count(Node $ar)
+	/**
+	 * Returns the number of comments associated with a node.
+	 *
+	 * @param Node $ar
+	 *
+	 * @return int
+	 */
+	static public function get_comments_count(Node $ar)
 	{
 		global $core;
 
 		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->count;
 	}
 
-	public static function get_rendered_comments_count(Node $ar)
+	/**
+	 * Returns the rendered number of comment associated with a node.
+	 *
+	 * The string is formated using the `comments.count` locale string.
+	 *
+	 * @param Node $ar
+	 *
+	 * @return string
+	 */
+	static public function get_rendered_comments_count(Node $ar)
 	{
 		return t('comments.count', array(':count' => $ar->comments_count));
 	}
 
-	public static function dashboard_last()
+	/*
+	 * Markups
+	 */
+
+	static public function markup_comments(array $args, \Patron\Engine $patron, $template)
 	{
-		global $core, $document;
+		global $core;
+
+		extract($args);
+
+		#
+		# build sql query
+		#
+
+		$arr = $core->models['comments']->filter_by_status(Comment::STATUS_APPROVED);
+
+		if ($node)
+		{
+			$arr->filter_by_nid($node);
+		}
+
+		if ($noauthor)
+		{
+			$arr->where('(SELECT uid FROM {prefix}nodes WHERE nid = comment.nid) != IFNULL(uid, 0)');
+		}
+
+		if ($order)
+		{
+			$arr->order($order);
+		}
+
+		if ($limit)
+		{
+			$arr->limit($limit * $page, $limit);
+		}
+
+		$records = $arr->all;
+
+		if (!$records && !$parseempty)
+		{
+			return;
+		}
+
+		return $patron($template, $records);
+	}
+
+	static public function markup_form(array $args, \Patron\Engine $patron, $template)
+	{
+		global $core;
+
+		#
+		# Obtain the form to use to add a comment from the 'forms' module.
+		#
+
+		$module = $core->modules['comments'];
+		$form_id = $core->site->metas['comments.form_id'];
+
+		if (!$form_id)
+		{
+			throw new Exception\Config($module);
+		}
+
+		if (!$core->user->has_permission(\ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
+		{
+			return new \Brickrouge\AlertMessage
+			(
+				<<<EOT
+You don't have permission the create comments,
+<a href="{$core->site->path}/admin/users.roles">the <q>Visitor</q> role should be modified.</a>
+EOT
+, array(), 'error'
+			);
+		}
+
+		$form = $core->models['forms'][$form_id];
+
+		if (!$form)
+		{
+			throw new Exception
+			(
+				'Uknown form with Id %nid', array
+				(
+					'%nid' => $form_id
+				)
+			);
+		}
+
+		new \BlueTihi\Context\LoadedNodesEvent($patron->context, array($form));
+
+		#
+		# Traget Id for the comment
+		#
+
+		$page = $core->request->context->page;
+
+		$form->form->hiddens[Comment::NID] = $page->node ? $page->node->nid : $page->nid;
+		$form->form->add_class('wd-feedback-comments');
+
+		return $template ? $patron($template, $form) : $form;
+	}
+
+	/*
+	 * Other
+	 */
+
+	static public function dashboard_last()
+	{
+		global $core;
 
 		if (empty($core->modules['comments']))
 		{
 			return;
 		}
 
+		$document = $core->document;
 		$document->css->add('public/admin.css');
 
 		$model = $core->models['comments'];
@@ -219,29 +370,28 @@ EOT
 		foreach ($entries as $entry)
 		{
 			$url = $entry->url;
-			$author = wd_entities($entry->author);
+			$author = \ICanBoogie\escape($entry->author);
 
 			if ($entry->author_url)
 			{
-				$author = '<a class="author" href="' . wd_entities($entry->author_url) . '">' . $author . '</a>';
+				$author = '<a class="author" href="' . \ICanBoogie\escape($entry->author_url) . '">' . $author . '</a>';
 			}
 			else
 			{
 				$author = '<strong class="author">' . $author . '</strong>';
 			}
 
-			$excerpt = \ICanBoogie\shorten(strip_tags((string) html_entity_decode($entry, ENT_COMPAT, ICanBoogie\CHARSET)), 140);
-
+			$excerpt = \ICanBoogie\shorten(strip_tags((string) html_entity_decode($entry, ENT_COMPAT, \ICanBoogie\CHARSET)), 140);
 			$target_url = $entry->node->url;
-			$target_title = wd_entities(\ICanBoogie\shorten($entry->node->title));
+			$target_title = \ICanBoogie\escape(\ICanBoogie\shorten($entry->node->title));
 
-			$image = wd_entities($entry->author_icon);
+			$image = \ICanBoogie\escape($entry->author_icon);
 
 			$entry_class = $entry->status == 'spam' ? 'spam' : '';
 			$url_edit = "$context/admin/comments/$entry->commentid/edit";
 			$url_delete = "$context/admin/comments/$entry->commentid/delete";
 
-			$date = wd_format_date($entry->created, 'dd MMM');
+			$date = \ICanBoogie\I18n\format_date($entry->created, 'dd MMM');
 
 			$txt_delete = t('Delete');
 			$txt_edit = t('Edit');
@@ -277,135 +427,5 @@ EOT;
 EOT;
 
 		return $rc;
-	}
-
-	/*
-	 * MARKUPS
-	 */
-
-	static public function comments(array $args, \WdPatron $patron, $template)
-	{
-		global $core;
-
-		if (array_key_exists('by', $args))
-		{
-			throw new Exception('"by" is no longer supported, use "order": \1', array($args));
-		}
-
-		extract($args);
-
-		#
-		# build sql query
-		#
-
-		$arr = $core->models['comments']->where('status = "approved"');
-
-		if ($node)
-		{
-			$arr->where(array('nid' => $node));
-		}
-
-		if ($noauthor)
-		{
-			$arr->where('(SELECT uid FROM {prefix}nodes WHERE nid = comment.nid) != IFNULL(uid, 0)');
-		}
-
-		if ($order)
-		{
-			$arr->order($order);
-		}
-
-		if ($limit)
-		{
-			$arr->limit($limit * $page, $limit);
-		}
-
-		$entries = $arr->all;
-
-		if (!$entries && !$parseempty)
-		{
-			return;
-		}
-
-		return $patron($template, $entries);
-	}
-
-	static public function form(array $args, \WdPatron $patron, $template)
-	{
-		global $core;
-
-		#
-		# Obtain the form to use to add a comment from the 'forms' module.
-		#
-
-		$module = $core->modules['comments'];
-		$form_id = $core->site->metas['comments.form_id'];
-
-		if (!$form_id)
-		{
-			throw new Exception\Config($module);
-		}
-
-		if (!$core->user->has_permission(ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
-		{
-			return new \Brickrouge\AlertMessage
-			(
-				<<<EOT
-You don't have permission the create comments,
-<a href="{$core->site->path}/admin/users.roles">the <q>Visitor</q> role should be modified.</a>
-EOT
-, array(), 'error'
-			);
-		}
-
-		$form = $core->models['forms'][$form_id];
-
-		if (!$form)
-		{
-			throw new Exception
-			(
-				'Uknown form with Id %nid', array
-				(
-					'%nid' => $form_id
-				)
-			);
-		}
-
-		Event::fire
-		(
-			'nodes_load', array
-			(
-				'nodes' => array($form)
-			),
-
-			$patron
-		);
-
-		#
-		# Traget Id for the comment
-		#
-
-		$page = $core->request->context->page;
-
-		$form->form->hiddens[Comment::NID] = $page->node ? $page->node->nid : $page->nid;
-		$form->form->add_class('wd-feedback-comments');
-
-		return $template ? $patron($template, $form) : $form;
-	}
-
-	public static function on_view_render(Event $event, \Icybee\Modules\Views\View $view)
-	{
-		global $core;
-
-		if ($event->id != 'articles/view')
-		{
-			return;
-		}
-
-		$editor = $core->editors['view'];
-		$list = $editor->render('comments/list');
-		$submit = $editor->render('comments/submit');
-
-		$event->rc .= PHP_EOL . $list . PHP_EOL . $submit;
 	}
 }

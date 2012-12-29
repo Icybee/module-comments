@@ -1,0 +1,28 @@
+{
+	"name": "icybee/module-comments",
+	"type": "icybee-module",
+	"description": "Allows users comments to be attached to nodes.",
+	"keywords": [ "comment" ],
+	"homepage": "http://icybee.org/",
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Olivier Laviale",
+			"email": "olivier.laviale@gmail.com",
+			"homepage": "http://www.weirdog.com/",
+			"role" : "Developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/Icybee/module-comments/issues",
+		"source": "https://github.com/Icybee/module-comments"
+	},
+	"minimum-stability": "dev",
+	"require": {
+		"php": ">=5.3.0",
+		"icybee/module-installer": "*"
+	},
+	"autoload": {
+		"classmap": [ "" ]
+	}
+}

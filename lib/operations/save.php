@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie\Modules\Comments;
+namespace Icybee\Modules\Comments;
 
-use ICanBoogie\ActiveRecord\Comment;
 use ICanBoogie\ActiveRecord\RecordNotFound;
 use ICanBoogie\Exception;
 use ICanBoogie\Mailer;
@@ -220,7 +219,7 @@ class SaveOperation extends \Icybee\SaveOperation
 		# prepare subject and message
 		#
 
-		$patron = new \WdPatron();
+		$patron = new \Patron\Engine();
 		$subject = $patron($options['subject'], $comment);
 		$message = $patron($options['template'], $comment);
 
