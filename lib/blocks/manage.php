@@ -18,7 +18,7 @@ use Brickrouge\Document;
 use Brickrouge\DropdownMenu;
 use Brickrouge\Element;
 
-class ManageBlock extends \WdManager
+class ManageBlock extends \Icybee\ManageBlock
 {
 	static protected function add_assets(Document $document)
 	{
@@ -131,6 +131,15 @@ class ManageBlock extends \WdManager
 
 		return $query;
 	}
+
+	protected function alter_records(array $records)
+	{
+		return $this->model->including_node(parent::alter_records($records));
+	}
+
+	/*
+	 * Cells
+	 */
 
 	protected function render_cell_comment($record, $property)
 	{

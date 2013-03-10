@@ -13,6 +13,7 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\RecordNotFound;
 use ICanBoogie\Exception;
+use ICanBoogie\I18n\FormattedString;
 use ICanBoogie\Mailer;
 use ICanBoogie\Operation;
 
@@ -77,7 +78,7 @@ class SaveOperation extends \Icybee\SaveOperation
 			}
 			catch (RecordNotFound $e)
 			{
-				$errors[Comment::NID] = t('Invalid node identifier: %nid', array('nid' => $nid));
+				$errors[Comment::NID] = new FormattedString('Invalid node identifier: %nid', array('nid' => $nid));
 
 				return false;
 			}
@@ -91,7 +92,7 @@ class SaveOperation extends \Icybee\SaveOperation
 		{
 			if (!$nid)
 			{
-				$errors[Comment::NID] = t('The node id is required to create a comment.');
+				$errors[Comment::NID] = new FormattedString('The node id is required to create a comment.');
 
 				return false;
 			}
@@ -102,7 +103,7 @@ class SaveOperation extends \Icybee\SaveOperation
 
 			if ($this->module->model->where('author_ip = ? AND status = "spam"', $request->ip)->rc)
 			{
-				$errors[] = t('A previous message from your IP was marked as spam.');
+				$errors[] = new FormattedString('A previous message from your IP was marked as spam.');
 			}
 		}
 
@@ -110,7 +111,7 @@ class SaveOperation extends \Icybee\SaveOperation
 
 		if ($author_url && !filter_var($author_url, FILTER_VALIDATE_URL))
 		{
-			$errors[] = t('Invalide URL: %url', array('url' => $author_url));
+			$errors[] = new FormattedString('Invalide URL: %url', array('url' => $author_url));
 		}
 
 		if (!$core->user_id)
@@ -119,7 +120,7 @@ class SaveOperation extends \Icybee\SaveOperation
 
 			if ($score < 1)
 			{
-				$errors[Comment::CONTENTS] = t('@form.log.spam', array('%score' => $score));
+				$errors[Comment::CONTENTS] = new FormattedString('Your message has been scored as spam.', array('%score' => $score));
 			}
 
 			#
@@ -140,7 +141,7 @@ class SaveOperation extends \Icybee\SaveOperation
 
 			if ($last)
 			{
-				$errors[] = t("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
+				$errors[] = new FormattedString("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
 			}
 		}
 

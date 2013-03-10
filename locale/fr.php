@@ -2,13 +2,6 @@
 
 return array
 (
-	'comments.manage.title' => array
-	(
-		'author' => 'Auteur',
-		'comment' => 'Commentaire',
-		'nid' => 'Attaché à'
-	),
-
 	'comments' => array
 	(
 		'count' => array
@@ -16,19 +9,31 @@ return array
 			'one' => 'Un commentaire',
 			'other' => ':count commentaires',
 			'none' => 'Pas de commentaire'
+		),
+
+		'delete' => array
+		(
+			'Delete a record' => 'Supprimer un commentaire'
+		),
+
+		'name' => array
+		(
+			'one' => 'Commentaire',
+			'other' => 'Commentaires'
 		)
 	),
 
-	':count comments' => array
+	'comments.manager.label' => array
 	(
-		'one' => 'Un commentaire',
-		'other' => ':count commentaires',
-		'none' => 'Pas de commentaire'
+		'author' => 'Auteur',
+		'comment' => 'Commentaire',
+		'nid' => 'Attaché à',
+		'score' => 'Note'
 	),
 
-	'comments.list.empty_view' => 'Pas de commentaires',
-
 	'module_title.comments' => 'Commentaires',
+
+	'comments.list.empty_view' => 'Pas de commentaires',
 
 	'Last comments' => 'Derniers commentaires',
 

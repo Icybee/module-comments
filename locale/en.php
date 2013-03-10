@@ -25,17 +25,11 @@ return array
 
 	'comments.manager.label' => array
 	(
- 		'comment' => 'Comment',
-		'nid' => 'Attached to'
-	),
-
-	'manager.label' => array
-	(
 		'author' => 'Author',
+		'comment' => 'Comment',
+		'nid' => 'Attached to',
 		'score' => 'Score'
 	),
-
-	'@form.log.spam' => 'Your message has been scored as spam.',
 
 	'module_title.comments' => 'Comments'
 );

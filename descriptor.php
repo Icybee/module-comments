@@ -2,8 +2,8 @@
 
 namespace Icybee\Modules\Comments;
 
-use ICanBoogie\Module;
 use ICanBoogie\ActiveRecord\Model;
+use ICanBoogie\Module;
 
 return array
 (
@@ -13,8 +13,10 @@ return array
 	(
 		'primary' => array
 		(
-			Model::T_ACTIVERECORD_CLASS => __NAMESPACE__ . '\Comment',
-			Model::T_SCHEMA => array
+			Model::ACTIVERECORD_CLASS => __NAMESPACE__ . '\Comment',
+			Model::BELONGS_TO => array('nodes', 'users'),
+			Model::CLASSNAME => __NAMESPACE__ . '\Model',
+			Model::SCHEMA => array
 			(
 				'fields' => array
 				(
@@ -29,7 +31,7 @@ return array
 					'contents' => 'text',
 					'status' => array('enum', array('pending', 'approved', 'spam'), 'indexed' => true),
 					'notify' => array('enum', array('no', 'yes', 'author', 'done'), 'indexed' => true),
-					'created' => array('timestamp', 'default' => 'current_timestamp()'),
+					'created' => array('timestamp', 'default' => 'CURRENT_TIMESTAMP'),
 				)
 			)
 		)

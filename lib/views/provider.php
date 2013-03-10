@@ -12,6 +12,7 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\I18n;
 
 class ViewProvider extends \Icybee\Modules\Views\ActiveRecordProvider
 {
@@ -41,7 +42,7 @@ class ViewProvider extends \Icybee\Modules\Views\ActiveRecordProvider
 	{
 		$count = $query->count;
 
-		$context['count'] = t('comments.count', array(':count' => $count));
+		$context['count'] = I18n\t('comments.count', array(':count' => $count));
 
 		return $context;
 	}

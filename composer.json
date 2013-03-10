@@ -23,6 +23,6 @@
 		"icybee/module-installer": "*"
 	},
 	"autoload": {
-		"classmap": [ "" ]
+		"classmap": [ "lib/" ]
 	}
 }

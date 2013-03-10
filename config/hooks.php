@@ -10,6 +10,7 @@ return array
 	(
 		'Icybee\Modules\Nodes\SaveOperation::process:before' => $hooks . 'before_node_save',
 		'Icybee\Modules\Nodes\DeleteOperation::process' => $hooks . 'on_node_delete',
+		'Icybee\Modules\Nodes\Node::collect_dependencies' => $hooks . 'on_node_collect_dependencies',
 		'Icybee\Modules\Forms\Module::alter.block.edit' => $hooks . 'alter_block_edit', // FIXME-20120922: this event is no longer fired
 		'Icybee\Modules\Views\View::render' => $hooks . 'on_view_render'
 	),
@@ -18,7 +19,8 @@ return array
 	(
 		'Icybee\Modules\Nodes\Node::get_comments' => $hooks . 'get_comments',
 		'Icybee\Modules\Nodes\Node::get_comments_count' => $hooks . 'get_comments_count',
-		'Icybee\Modules\Nodes\Node::get_rendered_comments_count' => $hooks . 'get_rendered_comments_count'
+		'Icybee\Modules\Nodes\Node::get_rendered_comments_count' => $hooks . 'get_rendered_comments_count',
+		'Icybee\Modules\Nodes\Model::including_comments_count' => $hooks . 'including_comments_count'
 	),
 
 	'patron.markups' => array

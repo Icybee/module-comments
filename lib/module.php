@@ -39,7 +39,7 @@ class Module extends \Icybee\Module
 
 	protected function get_views()
 	{
-		$assets = array('css' => __DIR__ . '/public/page.css');
+		$assets = array('css' => __DIR__ . '/../public/page.css');
 
 		return array
 		(

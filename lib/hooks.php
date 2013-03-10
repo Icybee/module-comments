@@ -11,14 +11,17 @@
 
 namespace Icybee\Modules\Comments;
 
-use Icybee\Modules\Nodes\Node;
+use ICanBoogie\Debug;
 use ICanBoogie\Event;
 use ICanBoogie\Exception;
+use ICanBoogie\I18n;
 use ICanBoogie\Operation;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
+
+use Icybee\Modules\Nodes\Node;
 
 class Hooks
 {
@@ -67,6 +70,24 @@ class Hooks
 		foreach ($ids as $commentid)
 		{
 			$model->delete($commentid);
+		}
+	}
+
+	/**
+	 * Adds the comments depending on a node.
+	 *
+	 * @param \ICanBoogie\ActiveRecord\CollectDependenciesEvent $event
+	 * @param \Icybee\Modules\Nodes\Node $target
+	 */
+	static public function on_node_collect_dependencies(\ICanBoogie\ActiveRecord\CollectDependenciesEvent $event, \Icybee\Modules\Nodes\Node $target)
+	{
+		global $core;
+
+		$records = $core->models['comments']->filter_by_nid($target->nid)->order('created DESC')->all;
+
+		foreach ($records as $record)
+		{
+			$event->add('comments', $record->commentid, \ICanBoogie\shorten($record->contents, 48, 1), true, $record->url);
 		}
 	}
 
@@ -196,7 +217,7 @@ EOT
 	 */
 
 	/**
-	 * Returns the comments associated with a node.
+	 * Returns the approved comments associated with a node.
 	 *
 	 * @param Node $ar
 	 *
@@ -210,7 +231,7 @@ EOT
 	}
 
 	/**
-	 * Returns the number of comments associated with a node.
+	 * Returns the number of approved comments associated with a node.
 	 *
 	 * @param Node $ar
 	 *
@@ -234,7 +255,29 @@ EOT
 	 */
 	static public function get_rendered_comments_count(Node $ar)
 	{
-		return t('comments.count', array(':count' => $ar->comments_count));
+		return I18n\t('comments.count', array(':count' => $ar->comments_count));
+	}
+
+	static public function including_comments_count(\Icybee\Modules\Nodes\Model $target, array $records)
+	{
+		global $core;
+
+		$keys = array();
+
+		foreach ($records as $record)
+		{
+			$keys[$record->nid] = $record;
+		}
+
+		$counts = $core->models['comments']->approved->filter_by_nid(array_keys($keys))->count('nid');
+		$counts = $counts + array_combine(array_keys($keys), array_fill(0, count($keys), 0));
+
+		foreach ($counts as $nid => $count)
+		{
+			$keys[$nid]->comments_count = $count;
+		}
+
+		return $records;
 	}
 
 	/*
@@ -251,7 +294,8 @@ EOT
 		# build sql query
 		#
 
-		$arr = $core->models['comments']->filter_by_status(Comment::STATUS_APPROVED);
+		$model = $core->models['comments'];
+		$arr = $model->filter_by_status(Comment::STATUS_APPROVED);
 
 		if ($node)
 		{
@@ -280,6 +324,8 @@ EOT
 			return;
 		}
 
+		$model->including_node($records);
+
 		return $patron($template, $records);
 	}
 
@@ -301,7 +347,12 @@ EOT
 
 		if (!$core->user->has_permission(\ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
 		{
-			return new \Brickrouge\AlertMessage
+			if (Debug::$mode != Debug::MODE_DEV)
+			{
+				return;
+			}
+
+			return new \Brickrouge\Alert
 			(
 				<<<EOT
 You don't have permission the create comments,
@@ -352,7 +403,7 @@ EOT
 		}
 
 		$document = $core->document;
-		$document->css->add('public/admin.css');
+		$document->css->add('../public/admin.css');
 
 		$model = $core->models['comments'];
 		$entries = $model
@@ -361,8 +412,10 @@ EOT
 
 		if (!$entries)
 		{
-			return '<p class="nothing">' . t('No record yet') . '</p>';
+			return '<p class="nothing">' . I18n\t('No record yet') . '</p>';
 		}
+
+		$model->including_node($entries);
 
 		$rc = '';
 		$context = $core->site->path;
@@ -393,9 +446,9 @@ EOT
 
 			$date = \ICanBoogie\I18n\format_date($entry->created, 'dd MMM');
 
-			$txt_delete = t('Delete');
-			$txt_edit = t('Edit');
-			$txt_display_associated_node = t('Display associated node');
+			$txt_delete = I18n\t('Delete');
+			$txt_edit = I18n\t('Edit');
+			$txt_display_associated_node = I18n\t('Display associated node');
 
 			$rc .= <<<EOT
 <div class="record $entry_class">
@@ -420,7 +473,7 @@ EOT;
 		}
 
 		$count = $model->joins(':nodes')->where('siteid = 0 OR siteid = ?', $core->site_id)->count;
-		$txt_all_comments = t('comments.count', array(':count' => $count));
+		$txt_all_comments = I18n\t('comments.count', array(':count' => $count));
 
 		$rc .= <<<EOT
 <div class="panel-footer"><a href="$context/admin/comments">$txt_all_comments</a></div>
