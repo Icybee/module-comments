@@ -1,6 +1,6 @@
 {
 	"name": "icybee/module-comments",
-	"type": "icybee-module",
+	"type": "icanboogie-module",
 	"description": "Allows users comments to be attached to nodes.",
 	"keywords": [ "comment" ],
 	"homepage": "http://icybee.org/",
@@ -20,7 +20,9 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.3.0",
-		"icybee/module-installer": "*"
+		"icanboogie/module-installer": "*",
+		"icanboogie/activerecord": "*",
+		"brickrouge/css-class-names": "*"
 	},
 	"autoload": {
 		"classmap": [ "lib/" ]

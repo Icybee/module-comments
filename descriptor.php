@@ -13,9 +13,7 @@ return array
 	(
 		'primary' => array
 		(
-			Model::ACTIVERECORD_CLASS => __NAMESPACE__ . '\Comment',
 			Model::BELONGS_TO => array('nodes', 'users'),
-			Model::CLASSNAME => __NAMESPACE__ . '\Model',
 			Model::SCHEMA => array
 			(
 				'fields' => array

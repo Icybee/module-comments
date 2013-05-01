@@ -25,7 +25,7 @@ use Textmark_Parser;
  * @property-read \Icybee\Modules\Nodes\Node $node The node the comment is attached to.
  * @property-read string $url URL of the comment relative to the website.
  */
-class Comment extends \ICanBoogie\ActiveRecord
+class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNames
 {
 	const COMMENTID = 'commentid';
 	const NID = 'nid';
@@ -130,15 +130,11 @@ class Comment extends \ICanBoogie\ActiveRecord
 	public $created;
 
 	/**
-	 * Returns the node the comment is attached to.
-	 *
-	 * @return \Icybee\Modules\Nodes\Node
+	 * Defaults model to "comments".
 	 */
-	protected function get_node()
+	public function __construct($model='comments')
 	{
-		global $core;
-
-		return $core->models['nodes'][$this->nid];
+		parent::__construct($model);
 	}
 
 	/**
@@ -149,7 +145,7 @@ class Comment extends \ICanBoogie\ActiveRecord
 	 *
 	 * @return string
 	 */
-	protected function get_url()
+	protected function volatile_get_url()
 	{
 		$node = $this->node;
 
@@ -161,7 +157,7 @@ class Comment extends \ICanBoogie\ActiveRecord
 	 *
 	 * @return string
 	 */
-	protected function get_absolute_url()
+	protected function volatile_get_absolute_url()
 	{
 		$node = $this->node;
 
@@ -173,7 +169,7 @@ class Comment extends \ICanBoogie\ActiveRecord
 	 *
 	 * @return string
 	 */
-	protected function get_author_icon()
+	protected function volatile_get_author_icon()
 	{
 		$hash = md5(strtolower(trim($this->author_email)));
 
@@ -242,7 +238,7 @@ class Comment extends \ICanBoogie\ActiveRecord
 	 */
 	public function css_class($modifiers=null)
 	{
-		return \Icybee\render_css_class($this->css_class_names, $modifiers);
+		return \Brickrouge\render_css_class($this->css_class_names, $modifiers);
 	}
 
 	/**
