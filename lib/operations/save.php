@@ -20,7 +20,7 @@ use ICanBoogie\Operation;
 /**
  * Saves a comment.
  */
-class SaveOperation extends \Icybee\SaveOperation
+class SaveOperation extends \ICanBoogie\SaveOperation
 {
 	protected function get_properties()
 	{
