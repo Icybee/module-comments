@@ -24,8 +24,8 @@ class ManageBlock extends \Icybee\ManageBlock
 	{
 		parent::add_assets($document);
 
-		$document->css->add('../../public/admin.css');
-		$document->js->add('../../public/admin.js');
+		$document->css->add(DIR . 'public/admin.css');
+		$document->js->add(DIR . 'public/admin.js');
 	}
 
 	public function __construct($module, array $attributes=array())
@@ -37,7 +37,7 @@ class ManageBlock extends \Icybee\ManageBlock
 				self::T_KEY => 'commentid',
 				self::T_COLUMNS_ORDER => array
 				(
-					'comment', 'status', 'author', /*'score',*/ 'nid', 'created'
+					'comment', 'url', 'status', 'author', /*'score',*/ 'nid', 'created'
 				),
 
 				self::T_ORDER_BY => array('created', 'desc'),
@@ -51,6 +51,12 @@ class ManageBlock extends \Icybee\ManageBlock
 		(
 			'comment' => array
 			(
+				'orderable' => false
+			),
+
+			'url' => array
+			(
+				'label' => null,
 				'orderable' => false
 			),
 
@@ -143,10 +149,7 @@ class ManageBlock extends \Icybee\ManageBlock
 
 	protected function render_cell_comment($record, $property)
 	{
-		$url = $this->render_cell_url($record);
-		$modify = parent::modify_code(\ICanBoogie\shorten(strip_tags($record), 48, 1), $record->commentid, $this);
-
-		return $url . $modify;
+		return parent::modify_code(\ICanBoogie\shorten(strip_tags($record), 48, 1), $record->commentid, $this);
 	}
 
 	protected function render_cell_status($record, $property)
@@ -196,10 +199,12 @@ EOT;
 		(
 			'a', array
 			(
-				Element::INNER_HTML => 'Voir le commentaire',
+				Element::INNER_HTML => '<i class="icon-external-link"></i>',
 
 				'href' => $record->url,
-				'class' => 'view'
+				'class' => 'view',
+				'title' => 'Display on website',
+				'target' => '_blank'
 			)
 		);
 	}
@@ -271,12 +276,12 @@ EOT;
 
 			$rc .= new A
 			(
-				"View record", $node->url, array
+				"", $node->url, array
 				(
 					'title' => $title,
-					'class' => 'view'
+					'class' => 'icon-external-link'
 				)
-			);
+			) . ' ';
 		}
 		else
 		{

@@ -2,6 +2,15 @@
  * index table
  */
  
+#manager td.cell--url {
+	width: 20px;
+	text-align: center;
+}
+
+#manager td.cell--url a {
+	text-decoration: none;
+}
+ 
 .cell--author img
 {
 	width: 32px;
