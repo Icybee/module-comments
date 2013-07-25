@@ -11,8 +11,6 @@
 
 namespace Icybee\Modules\Comments;
 
-use Icybee\Modules\Comments\Comment;
-
 use Brickrouge\Element;
 use Brickrouge\Form;
 use Brickrouge\Text;
@@ -59,7 +57,6 @@ class EditBlock extends \Icybee\EditBlock
 				array
 				(
 					Form::LABEL => 'Adresse IP',
-					Element::DESCRIPTION => "Status spam: <em>en cours de vérification</em>.",
 
 					'disabled' => true
 				)

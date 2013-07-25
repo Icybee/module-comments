@@ -16,6 +16,14 @@ return array
 			'Delete a record' => 'Delete a comment'
 		),
 
+		'manage.column' => array
+		(
+			'author' => 'Author',
+			'comment' => 'Comment',
+			'nid' => 'Associated node',
+			'status' => 'Status'
+		),
+
 		'name' => array
 		(
 			'one' => 'Comment',

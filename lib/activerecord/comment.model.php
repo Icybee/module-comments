@@ -13,6 +13,7 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord;
 use ICanBoogie\ActiveRecord\Query;
+use ICanBoogie\DateTime;
 
 /**
  * Comments model.
@@ -30,6 +31,7 @@ class Model extends ActiveRecord\Model
 	{
 		$properties += array
 		(
+			Comment::CREATED => DateTime::now(),
 			Comment::STATUS => 'pending',
 			Comment::NOTIFY => 'no'
 		);

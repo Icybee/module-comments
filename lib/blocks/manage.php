@@ -34,10 +34,9 @@ class ManageBlock extends \Icybee\ManageBlock
 		(
 			$module, $attributes + array
 			(
-				self::T_KEY => 'commentid',
 				self::T_COLUMNS_ORDER => array
 				(
-					'comment', 'url', 'status', 'author', /*'score',*/ 'nid', 'created'
+					'comment', 'url', 'status', 'author', 'nid', 'created'
 				),
 
 				self::T_ORDER_BY => array('created', 'desc'),
@@ -45,66 +44,21 @@ class ManageBlock extends \Icybee\ManageBlock
 		);
 	}
 
-	protected function columns()
+	protected function get_available_columns()
 	{
-		return parent::columns() + array
+		return array_merge(parent::get_available_columns(), array
 		(
-			'comment' => array
-			(
-				'orderable' => false
-			),
-
-			'url' => array
-			(
-				'label' => null,
-				'orderable' => false
-			),
-
-			'status' => array
-			(
-				'filters' => array
-				(
-					'options' => array
-					(
-						'=approved' => "Approved",
-						'=pending' => "Pending",
-						'=spam' => "Spam"
-					)
-				),
-
-				'orderable' => false,
-
-				'label' => 'Status',
-				'class' => 'pull-right'
-			),
-
-			'score' => array
-			(
-				'class' => 'score',
-				'orderable' => false
-			),
-
-			Comment::AUTHOR => array
-			(
-				'class' => 'author'
-			),
-
-			Comment::NID => array
-			(
-				'orderable' => false
-			),
-
-			Comment::CREATED => array
-			(
-				'class' => 'date'
-			)
-		);
+			'comment' =>        __CLASS__ . '\CommentColumn',
+			'url' =>            'Icybee\Modules\Nodes\ManageBlock\URLColumn',
+			'status' =>         __CLASS__ . '\StatusColumn',
+			Comment::AUTHOR =>  __CLASS__ . '\AuthorColumn',
+			Comment::NID =>     __CLASS__ . '\NodeColumn',
+			Comment::CREATED => 'Icybee\ManageBlock\DateTimeColumn'
+		));
 	}
 
 	/**
 	 * Update filters with the `status` modifier.
-	 *
-	 * @see Icybee.Manager::update_filters()
 	 */
 	protected function update_filters(array $filters, array $modifiers)
 	{
@@ -131,28 +85,68 @@ class ManageBlock extends \Icybee\ManageBlock
 	{
 		global $core;
 
-		$query = parent::alter_query($query, $filters);
-
-		$query->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $core->site_id);
-
-		return $query;
+		return parent::alter_query($query, $filters)
+		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $core->site_id);
 	}
+}
 
-	protected function alter_records(array $records)
+/*
+ * Columns
+ */
+
+namespace Icybee\Modules\Comments\ManageBlock;
+
+use Brickrouge\A;
+use Brickrouge\Element;
+use Brickrouge\DropdownMenu;
+
+use Icybee\ManageBlock;
+use Icybee\ManageBlock\Column;
+use Icybee\ManageBlock\EditDecorator;
+use Icybee\ManageBlock\FilterDecorator;
+use Icybee\Modules\Comments\Comment;
+
+/**
+ * Representation of the `comment` column.
+ */
+class CommentColumn extends Column
+{
+	public function render_cell($record)
 	{
-		return $this->model->including_node(parent::alter_records($records));
+		return new EditDecorator(\ICanBoogie\shorten(strip_tags($record), 48, 1), $record);
 	}
+}
 
-	/*
-	 * Cells
-	 */
-
-	protected function render_cell_comment($record, $property)
+/**
+ * Representation of the `status` column.
+ */
+class StatusColumn extends Column
+{
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
 	{
-		return parent::modify_code(\ICanBoogie\shorten(strip_tags($record), 48, 1), $record->commentid, $this);
+		parent::__construct
+		(
+			$manager, $id, $options + array
+			(
+				'filters' => array
+				(
+					'options' => array
+					(
+						'=approved' => "Approved",
+						'=pending' => "Pending",
+						'=spam' => "Spam"
+					)
+				),
+
+				'orderable' => false,
+
+				'title' => 'Status',
+				'class' => 'pull-right'
+			)
+		);
 	}
 
-	protected function render_cell_status($record, $property)
+	public function render_cell($record)
 	{
 		static $labels = array
 		(
@@ -188,34 +182,29 @@ class ManageBlock extends \Icybee\ManageBlock
 		return <<<EOT
 <div class="btn-group" data-property="status" data-key="$commentid" data-classes="$classes_json">
 	<span class="btn $status_class dropdown-toggle" data-toggle="dropdown"><span class="text">$status_label</span> <span class="caret"></span></span>
-    $menu
+	$menu
 </div>
 EOT;
 	}
+}
 
-	protected function render_cell_url($record)
+/**
+ * Representation of the `author` column.
+ */
+class AuthorColumn extends Column
+{
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
 	{
-		return new Element
-		(
-			'a', array
-			(
-				Element::INNER_HTML => '<i class="icon-external-link"></i>',
-
-				'href' => $record->url,
-				'class' => 'view',
-				'title' => 'Display on website',
-				'target' => '_blank'
-			)
-		);
+		parent::__construct($manager, $id, $options);
 	}
 
 	protected $last_rendered_author;
 
-	protected function render_cell_author($record, $property)
+	public function render_cell($record)
 	{
 		if ($this->last_rendered_author == $record->author_email)
 		{
-			return self::REPEAT_PLACEHOLDER;
+			return ManageBlock::DISCREET_PLACEHOLDER;
 		}
 
 		$this->last_rendered_author = $record->author_email;
@@ -238,7 +227,7 @@ EOT;
 
 		$rc .= '<div class="details">';
 
-		$rc .= $this->render_filter_cell($record, $property);
+		$rc .= new FilterDecorator($record, $this->id, $this->is_filtering);
 
 		$email = $record->author_email;
 
@@ -262,9 +251,21 @@ EOT;
 
 		return $rc;
 	}
+}
 
-	protected function render_cell_nid($record, $property)
+/**
+ * Representation of the `nid` column.
+ */
+class NodeColumn extends Column
+{
+	public function alter_records(array $records)
 	{
+		return $this->manager->model->including_node($records);
+	}
+
+	public function render_cell($record)
+	{
+		$property = $this->id;
 		$node = $record->node;
 
 		$rc = '';
@@ -288,11 +289,6 @@ EOT;
 			$label = '<em class="warn">unknown-node-' . $record->$property . '</em>';
 		}
 
-		return $rc . $this->render_filter_cell($record, $property, $label);
-	}
-
-	protected function render_cell_created($record, $property)
-	{
-		return $this->render_cell_datetime($record, $property);
+		return $rc . new FilterDecorator($record, $property, $this->is_filtering, $label);
 	}
 }
