@@ -13,30 +13,6 @@ namespace Icybee\Modules\Comments;
 
 class Module extends \Icybee\Module
 {
-	static public function score_spam($contents, $url, $author)
-	{
-		global $core;
-
-		$score = wd_spamScore($contents, $url, $author);
-
-		#
-		# additionnal contents restrictions
-		#
-
-		$score -= substr_count($contents, '[url=');
-
-		#
-		# additionnal author restrictions
-		#
-
-		if ($author{0} == '#')
-		{
-			$score -= 5;
-		}
-
-		return $score;
-	}
-
 	protected function get_views()
 	{
 		$assets = array('css' => __DIR__ . '/../public/page.css');

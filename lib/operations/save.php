@@ -116,13 +116,6 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		if (!$core->user_id)
 		{
-			$score = Module::score_spam($request[Comment::CONTENTS], $request[Comment::AUTHOR_URL], $request[Comment::AUTHOR]);
-
-			if ($score < 1)
-			{
-				$errors[Comment::CONTENTS] = new FormattedString('Your message has been scored as spam.', array('%score' => $score));
-			}
-
 			#
 			# delay between last post
 			#
