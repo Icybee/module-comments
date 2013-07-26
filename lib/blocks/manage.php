@@ -13,14 +13,9 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Query;
 
-use Brickrouge\A;
-use Brickrouge\Document;
-use Brickrouge\DropdownMenu;
-use Brickrouge\Element;
-
 class ManageBlock extends \Icybee\ManageBlock
 {
-	static protected function add_assets(Document $document)
+	static protected function add_assets(\Brickrouge\Document $document)
 	{
 		parent::add_assets($document);
 
@@ -44,6 +39,18 @@ class ManageBlock extends \Icybee\ManageBlock
 		);
 	}
 
+	/**
+	 * Adds the following columns:
+	 *
+	 * - `comment`: An instance of {@link ManageBlock\CommentColumn}.
+	 * - `url`: An instance of {@link ManageBlock\URLColumn}.
+	 * - `status`: An instance of {@link ManageBlock\StatusColumn}.
+	 * - `author`: An instance of {@link ManageBlock\AuthorColumn}.
+	 * - `nid`: An instance of {@link ManageBlock\NodeColumn}.
+	 * - `created`: An instance of {@link \Icybee\ManageBlock\DateTimeColumn}.
+	 *
+	 * @return array
+	 */
 	protected function get_available_columns()
 	{
 		return array_merge(parent::get_available_columns(), array
@@ -96,6 +103,8 @@ class ManageBlock extends \Icybee\ManageBlock
 
 namespace Icybee\Modules\Comments\ManageBlock;
 
+use ICanBoogie\ActiveRecord\Query;
+
 use Brickrouge\A;
 use Brickrouge\Element;
 use Brickrouge\DropdownMenu;
@@ -111,6 +120,17 @@ use Icybee\Modules\Comments\Comment;
  */
 class CommentColumn extends Column
 {
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	{
+		parent::__construct
+		(
+			$manager, $id, array
+			(
+				'orderable' => false
+			)
+		);
+	}
+
 	public function render_cell($record)
 	{
 		return new EditDecorator(\ICanBoogie\shorten(strip_tags($record), 48, 1), $record);
@@ -128,6 +148,8 @@ class StatusColumn extends Column
 		(
 			$manager, $id, $options + array
 			(
+				'class' => 'pull-right',
+				'orderable' => false,
 				'filters' => array
 				(
 					'options' => array
@@ -136,12 +158,7 @@ class StatusColumn extends Column
 						'=pending' => "Pending",
 						'=spam' => "Spam"
 					)
-				),
-
-				'orderable' => false,
-
-				'title' => 'Status',
-				'class' => 'pull-right'
+				)
 			)
 		);
 	}
@@ -193,21 +210,37 @@ EOT;
  */
 class AuthorColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	/**
+	 * Filters the records according to the `email` column.
+	 */
+	public function alter_query_with_filter(Query $query, $filter_value)
 	{
-		parent::__construct($manager, $id, $options);
+		if ($filter_value)
+		{
+			$query->filter_by_author_email($filter_value);
+		}
+
+		return $query;
 	}
 
-	protected $last_rendered_author;
+	/**
+	 * Orders the records according to the `author` column.
+	 */
+	public function alter_query_with_order(Query $query, $order_direction)
+	{
+		return $query->order('`author` ' . ($order_direction < 0 ? 'DESC' : 'ASC'));
+	}
+
+	private $discreet_value;
 
 	public function render_cell($record)
 	{
-		if ($this->last_rendered_author == $record->author_email)
+		if ($this->discreet_value == $record->author_email)
 		{
 			return ManageBlock::DISCREET_PLACEHOLDER;
 		}
 
-		$this->last_rendered_author = $record->author_email;
+		$this->discreet_value = $record->author_email;
 
 		$rc = '';
 
@@ -227,13 +260,13 @@ class AuthorColumn extends Column
 
 		$rc .= '<div class="details">';
 
-		$rc .= new FilterDecorator($record, $this->id, $this->is_filtering);
+		$rc .= new FilterDecorator($record, $this->id, $this->is_filtering, $record->author, $record->author_email);
 
 		$email = $record->author_email;
 
 		if ($email)
 		{
-			$rc .= ' <span class="small">&lt;';
+			$rc .= '<br /><span class="small">&lt;';
 			$rc .= new A($email, 'mailto:' . $email);
 			$rc .= '&gt;</span>';
 		}
@@ -258,6 +291,20 @@ class AuthorColumn extends Column
  */
 class NodeColumn extends Column
 {
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	{
+		parent::__construct
+		(
+			$manager, $id, array
+			(
+				'orderable' => false
+			)
+		);
+	}
+
+	/**
+	 * Loads the nodes associated with the comments.
+	 */
 	public function alter_records(array $records)
 	{
 		return $this->manager->model->including_node($records);
