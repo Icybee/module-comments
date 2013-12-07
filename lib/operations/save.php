@@ -22,11 +22,11 @@ use ICanBoogie\Operation;
  */
 class SaveOperation extends \ICanBoogie\SaveOperation
 {
-	protected function get_properties()
+	protected function lazy_get_properties()
 	{
 		global $core;
 
-		$properties = parent::get_properties();
+		$properties = parent::lazy_get_properties();
 		$user = $core->user;
 
 		if ($this->key)

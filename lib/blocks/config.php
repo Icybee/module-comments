@@ -20,11 +20,11 @@ use Brickrouge\Text;
  */
 class ConfigBlock extends \Icybee\ConfigBlock
 {
-	protected function get_attributes()
+	protected function lazy_get_attributes()
 	{
 		return \ICanBoogie\array_merge_recursive
 		(
-			parent::get_attributes(), array
+			parent::lazy_get_attributes(), array
 			(
 				Element::GROUPS => array
 				(
@@ -42,7 +42,7 @@ class ConfigBlock extends \Icybee\ConfigBlock
 		);
 	}
 
-	protected function get_children()
+	protected function lazy_get_children()
 	{
 		global $core;
 
@@ -50,7 +50,7 @@ class ConfigBlock extends \Icybee\ConfigBlock
 
 		return array_merge
 		(
-			parent::get_children(), array
+			parent::lazy_get_children(), array
 			(
 				"local[$ns.form_id]" => new \Icybee\Modules\Forms\PopForm
 				(

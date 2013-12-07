@@ -20,7 +20,7 @@ use Brickrouge\Text;
  */
 class EditBlock extends \Icybee\EditBlock
 {
-	protected function get_children()
+	protected function lazy_get_children()
 	{
 		$values = $this->values;
 

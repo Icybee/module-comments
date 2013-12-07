@@ -145,7 +145,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return string
 	 */
-	protected function volatile_get_url()
+	protected function get_url()
 	{
 		$node = $this->node;
 
@@ -157,7 +157,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return string
 	 */
-	protected function volatile_get_absolute_url()
+	protected function get_absolute_url()
 	{
 		$node = $this->node;
 
@@ -169,7 +169,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return string
 	 */
-	protected function volatile_get_author_icon()
+	protected function get_author_icon()
 	{
 		$hash = md5(strtolower(trim($this->author_email)));
 
@@ -199,7 +199,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return string
 	 */
-	protected function get_excerpt()
+	protected function lazy_get_excerpt()
 	{
 		return $this->excerpt();
 	}
@@ -209,7 +209,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return boolean `true` if the author is the same, `false` otherwise.
 	 */
-	protected function volatile_get_is_author()
+	protected function get_is_author()
 	{
 		return $this->node->uid == $this->uid;
 	}
@@ -219,7 +219,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return array[string]mixed
 	 */
-	protected function get_css_class_names()
+	protected function lazy_get_css_class_names()
 	{
 		return array
 		(
@@ -246,7 +246,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 *
 	 * @return string
 	 */
-	protected function get_css_class()
+	protected function lazy_get_css_class()
 	{
 		return $this->css_class();
 	}
