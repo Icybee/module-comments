@@ -123,13 +123,13 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 			$interval = $core->site->metas[$this->module->flat_id . '.delay'] ?: 5;
 
 			$last = $this->module->model
-			->select('created')
+			->select('created_at')
 			->where
 			(
-				'(author = ? OR author_email = ? OR author_ip = ?) AND created + INTERVAL ? MINUTE > NOW()',
+				'(author = ? OR author_email = ? OR author_ip = ?) AND created_at + INTERVAL ? MINUTE > UTC_TIMESTAMP()',
 				$request['author'], $request['author_email'], $request->ip, $interval
 			)
-			->order('created DESC')
+			->order('created_at DESC')
 			->rc;
 
 			if ($last)

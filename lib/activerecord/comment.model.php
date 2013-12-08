@@ -29,11 +29,16 @@ class Model extends ActiveRecord\Model
 	 */
 	public function save(array $properties, $key=null, array $options=array())
 	{
+		if (!$key && empty($properties[Comment::CREATED_AT]))
+		{
+			$properties[Comment::CREATED_AT] = DateTime::now();
+		}
+
 		$properties += array
 		(
-			Comment::CREATED => DateTime::now(),
 			Comment::STATUS => 'pending',
-			Comment::NOTIFY => 'no'
+			Comment::NOTIFY => 'no',
+			Comment::UPDATED_AT => DateTime::now()
 		);
 
 		if (!in_array($properties[Comment::NOTIFY], array('no', 'yes', 'author', 'done')))

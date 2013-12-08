@@ -31,10 +31,10 @@ class ManageBlock extends \Icybee\ManageBlock
 			(
 				self::T_COLUMNS_ORDER => array
 				(
-					'comment', 'url', 'status', 'author', 'nid', 'created'
+					'comment', 'url', 'status', 'author', 'nid', 'created_at'
 				),
 
-				self::T_ORDER_BY => array('created', 'desc'),
+				self::T_ORDER_BY => array('created_at', 'desc'),
 			)
 		);
 	}
@@ -55,12 +55,12 @@ class ManageBlock extends \Icybee\ManageBlock
 	{
 		return array_merge(parent::get_available_columns(), array
 		(
-			'comment' =>        __CLASS__ . '\CommentColumn',
-			'url' =>            'Icybee\Modules\Nodes\ManageBlock\URLColumn',
-			'status' =>         __CLASS__ . '\StatusColumn',
-			Comment::AUTHOR =>  __CLASS__ . '\AuthorColumn',
-			Comment::NID =>     __CLASS__ . '\NodeColumn',
-			Comment::CREATED => 'Icybee\ManageBlock\DateTimeColumn'
+			'comment'           => __CLASS__ . '\CommentColumn',
+			'url'               => 'Icybee\Modules\Nodes\ManageBlock\URLColumn',
+			'status'            => __CLASS__ . '\StatusColumn',
+			Comment::AUTHOR     => __CLASS__ . '\AuthorColumn',
+			Comment::NID        => __CLASS__ . '\NodeColumn',
+			Comment::CREATED_AT => 'Icybee\ManageBlock\DateTimeColumn'
 		));
 	}
 

@@ -11,11 +11,13 @@
 
 namespace Icybee\Modules\Comments;
 
-use Textmark_Parser;
+use ICanBoogie\DateTime;
 
 /**
  * A comment.
  *
+ * @property DateTime $created_at The date and time at which the node was created.
+ * @property DateTime $updated_at The date and time at which the node was updated.
  * @property-read string $absolute_url URL of the comment.
  * @property-read string $author_icon URL of the author's Gravatar.
  * @property-read string $css_class A suitable string for the HTML `class` attribute.
@@ -41,7 +43,8 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	const STATUS_PENDING = 'pending';
 	const STATUS_SPAM = 'spam';
 	const NOTIFY = 'notify';
-	const CREATED = 'created';
+	const CREATED_AT = 'created_at';
+	const UPDATED_AT = 'updated_at';
 
 	/**
 	 * Comment identifier.
@@ -123,11 +126,72 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	public $notify;
 
 	/**
-	 * Date created.
+	 * The date and time the comment was created.
 	 *
-	 * @var string
+	 * @var \ICanBoogie\DateTime
 	 */
-	public $created;
+	private $created_at;
+
+	/**
+	 * Returns the date and time the comment was created.
+	 *
+	 * @return \ICanBoogie\DateTime
+	 */
+	protected function get_created_at()
+	{
+		$datetime = $this->created_at;
+
+		if ($datetime instanceof DateTime)
+		{
+			return $datetime;
+		}
+
+		return $this->created_at = ($datetime === null) ? DateTime::none() : new DateTime($datetime, 'utc');
+	}
+
+	/**
+	 * Sets the date and time the comment was created.
+	 *
+	 * @param \DateTime|string $datetime
+	 */
+	protected function set_created_at($datetime)
+	{
+		$this->created_at = $datetime;
+	}
+
+	/**
+	 * The date and time the comment was updated.
+	 *
+	 * @var \ICanBoogie\DateTime
+	 */
+	private $updated_at;
+
+	/**
+	 * Returns the date and time the comment was updated.
+	 *
+	 * @return \ICanBoogie\DateTime
+	 */
+	protected function get_updated_at()
+	{
+		$datetime = $this->updated_at;
+
+		if ($datetime instanceof DateTime)
+		{
+			return $datetime;
+		}
+
+		return $this->updated_at = ($datetime === null) ? DateTime::none() : new DateTime($datetime, 'utc');
+	}
+
+	/**
+	 * Sets the date and time the comment was updated.
+	 *
+	 * @param \DateTime|string $datetime
+	 */
+	protected function set_updated_at($datetime)
+	{
+		$this->updated_at = $datetime;
+	}
 
 	/**
 	 * Defaults model to "comments".
@@ -258,7 +322,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 */
 	public function __toString()
 	{
-		$str = Textmark_Parser::parse($this->contents);
+		$str = \Textmark_Parser::parse($this->contents);
 
 		return \Icybee\Kses::sanitizeComment($str);
 	}

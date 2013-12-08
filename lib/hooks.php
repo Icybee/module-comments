@@ -83,7 +83,7 @@ class Hooks
 	{
 		global $core;
 
-		$records = $core->models['comments']->filter_by_nid($target->nid)->order('created DESC')->all;
+		$records = $core->models['comments']->filter_by_nid($target->nid)->order('created_at DESC')->all;
 
 		foreach ($records as $record)
 		{
@@ -227,7 +227,7 @@ EOT
 	{
 		global $core;
 
-		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->order('created')->all;
+		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->order('created_at')->all;
 	}
 
 	/**
@@ -408,7 +408,7 @@ EOT
 		$model = $core->models['comments'];
 		$entries = $model
 		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $core->site_id)
-		->order('created DESC')->limit(5)->all;
+		->order('created_at DESC')->limit(5)->all;
 
 		if (!$entries)
 		{
@@ -444,7 +444,7 @@ EOT
 			$url_edit = "$context/admin/comments/$entry->commentid/edit";
 			$url_delete = "$context/admin/comments/$entry->commentid/delete";
 
-			$date = \ICanBoogie\I18n\format_date($entry->created, 'dd MMM');
+			$date = \ICanBoogie\I18n\format_date($entry->created_at, 'dd MMM');
 
 			$txt_delete = I18n\t('Delete');
 			$txt_edit = I18n\t('Edit');

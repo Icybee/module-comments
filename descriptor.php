@@ -29,7 +29,8 @@ return array
 					'contents' => 'text',
 					'status' => array('enum', array('pending', 'approved', 'spam'), 'indexed' => true),
 					'notify' => array('enum', array('no', 'yes', 'author', 'done'), 'indexed' => true),
-					'created' => array('timestamp', 'default' => 'CURRENT_TIMESTAMP'),
+					'created_at' => array('timestamp', 'default' => 'CURRENT_TIMESTAMP'),
+					'updated_at' => 'timestamp'
 				)
 			)
 		)

@@ -30,7 +30,7 @@ return array
 			$hooks . 'markup_comments', array
 			(
 				'node' => null,
-				'order' => 'created asc',
+				'order' => 'created_at asc',
 				'limit' => 0,
 				'page' => 0,
 				'noauthor' => false,

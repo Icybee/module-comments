@@ -35,7 +35,7 @@ class ViewProvider extends \Icybee\Modules\Views\ActiveRecordProvider
 
 		$query->where('status != "spam" && status != "pending"');
 
-		return $query->order('created');
+		return $query->order('created_at');
 	}
 
 	protected function alter_context(\BlueTihi\Context $context, Query $query, array $conditions)
