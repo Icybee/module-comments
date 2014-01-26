@@ -26,7 +26,7 @@ Create a `composer.json` file and run `php composer.phar install` command to ins
 {
 	"minimum-stability": "dev",
 	"require": {
-		"icybee/module-comments": "*"
+		"icybee/module-comments": "2.x"
 	}
 }
 ```

@@ -11,6 +11,8 @@
 
 namespace Icybee\Modules\Comments;
 
+use Icybee\Modules\Nodes\Node;
+
 class CommentTest extends \PHPUnit_Framework_TestCase
 {
 	static private $instance;
@@ -61,5 +63,40 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertArrayHasKey('updated_at', $comment->__sleep());
 		$this->assertArrayHasKey('updated_at', $comment->to_array());
+	}
+
+	/**
+	 * @dataProvider provide_test_property
+	 */
+	public function test_css_propery($property, $expected, $properties)
+	{
+		$this->assertEquals($expected, Comment::from($properties)->$property);
+	}
+
+	public function provide_test_property()
+	{
+		return [
+
+			[
+				'css_class',
+				'comment comment-123 author-reply', [
+
+					'commentid' => 123,
+					'uid' => 1,
+					'node' => Node::from(array('uid' => 1))
+				]
+			],
+
+			[
+				'css_class',
+				'comment comment-456', [
+
+					'commentid' => 456,
+					'uid' => 123,
+					'node' => Node::from(array('uid' => 1))
+				]
+			]
+
+		];
 	}
 }
