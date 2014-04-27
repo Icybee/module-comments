@@ -242,20 +242,18 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 				)
 			);
 
-			$mailer = new Mailer
-			(
-				array
-				(
-					Mailer::T_DESTINATION => $entry->author_email,
-					Mailer::T_FROM => $from,
-					Mailer::T_BCC => $bcc,
-					Mailer::T_MESSAGE => $message,
-					Mailer::T_SUBJECT => $subject,
-					Mailer::T_TYPE => 'plain'
-				)
-			);
+			$rc = $core->mail([
 
-			if (!$mailer())
+				'to' => $entry->author_email,
+				'from' => $from,
+				'bcc' => $bcc,
+				'body' => $message,
+				'subject' => $subject,
+				'type' => 'plain'
+
+			]);
+
+			if (!$rc)
 			{
 				\ICanBoogie\log_error('Unable to send notify to %author', array('%author' => $entry->author));
 
