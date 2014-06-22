@@ -200,7 +200,7 @@ EOT
 	{
 		global $core;
 
-		if ($event->id != 'articles/view')
+		if ($view->id != 'articles/view')
 		{
 			return;
 		}
@@ -209,7 +209,7 @@ EOT
 		$list = $editor->render('comments/list');
 		$submit = $editor->render('comments/submit');
 
-		$event->rc .= PHP_EOL . $list . PHP_EOL . $submit;
+		$event->html .= PHP_EOL . $list . PHP_EOL . $submit;
 	}
 
 	/*

@@ -11,13 +11,9 @@
 
 namespace Icybee\Modules\Comments;
 
-use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\I18n;
+use ICanBoogie\ActiveRecord\Criterion;
 
-class ViewProvider extends \ICanBoogie\ActiveRecord\Fetcher
+class NidCriterion extends Criterion
 {
-	public function alter_query(Query $query)
-	{
-		return parent::alter_query($query)->and('status != "spam" AND status != "pending"');
-	}
+
 }

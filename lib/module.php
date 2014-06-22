@@ -15,23 +15,24 @@ class Module extends \Icybee\Module
 {
 	protected function lazy_get_views()
 	{
-		$assets = array('css' => __DIR__ . '/../public/page.css');
+		$assets = array('css' => DIR . 'public/page.css');
 
 		return array
 		(
 			'list' => array
 			(
-				'title' => "Comments associated to a node",
-				'assets' => $assets,
-				'provider' => __NAMESPACE__ . '\ViewProvider',
-				'renders' => \Icybee\Modules\Views\View::RENDERS_MANY
+				View::TITLE => "Comments associated to a node",
+				View::ASSETS => $assets,
+				View::CLASSNAME => __NAMESPACE__ . '\View',
+				View::PROVIDER => __NAMESPACE__ . '\ViewProvider',
+				View::RENDERS => View::RENDERS_MANY
 			),
 
 			'submit' => array
 			(
-				'title' => "Comment submit form",
-				'assets' => $assets,
-				'renders' => \Icybee\Modules\Views\View::RENDERS_OTHER
+				View::TITLE => "Comment submit form",
+				View::ASSETS => $assets,
+				View::RENDERS => View::RENDERS_OTHER
 			)
 		);
 	}
