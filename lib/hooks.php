@@ -375,6 +375,11 @@ EOT
 			);
 		}
 
+		if (!$form->is_online)
+		{
+			return;
+		}
+
 		new \BlueTihi\Context\LoadedNodesEvent($patron->context, array($form));
 
 		#
