@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\RecordNotFound;
-use ICanBoogie\Exception;
 use ICanBoogie\I18n\FormattedString;
 use ICanBoogie\Mailer;
 use ICanBoogie\Operation;

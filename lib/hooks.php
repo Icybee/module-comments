@@ -13,7 +13,6 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\Debug;
 use ICanBoogie\Event;
-use ICanBoogie\Exception;
 use ICanBoogie\I18n;
 use ICanBoogie\Operation;
 
@@ -342,7 +341,7 @@ EOT
 
 		if (!$form_id)
 		{
-			throw new Exception\Config($module);
+			throw new \ICanBoogie\Exception\Config($module);
 		}
 
 		if (!$core->user->has_permission(\ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
@@ -366,13 +365,11 @@ EOT
 
 		if (!$form)
 		{
-			throw new Exception
-			(
-				'Uknown form with Id %nid', array
-				(
-					'%nid' => $form_id
-				)
-			);
+			throw new \InvalidArgumentException(\ICanBoogie\format('Uknown form with Id %nid', [
+
+				'nid' => $form_id
+
+			]));
 		}
 
 		if (!$form->is_online)
