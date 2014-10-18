@@ -13,6 +13,8 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\I18n;
 
+use Icybee\Modules\Views\ViewOptions;
+
 class View extends \Icybee\Modules\Views\View
 {
 	protected function provide($provider, array $conditions)
@@ -31,9 +33,12 @@ class View extends \Icybee\Modules\Views\View
 	{
 		$context = parent::alter_context($context);
 
-		$count = $this->provider->count;
+		if ($this->renders == ViewOptions::RENDERS_MANY)
+		{
+			$count = $this->provider->count;
 
-		$context['count'] = I18n\t('comments.count', array(':count' => $count));
+			$context['count'] = I18n\t('comments.count', array(':count' => $count));
+		}
 
 		return $context;
 	}
