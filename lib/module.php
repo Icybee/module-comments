@@ -11,6 +11,8 @@
 
 namespace Icybee\Modules\Comments;
 
+use Icybee\Modules\Views\ViewOptions;
+
 class Module extends \Icybee\Module
 {
 	protected function lazy_get_views()
@@ -21,18 +23,17 @@ class Module extends \Icybee\Module
 		(
 			'list' => array
 			(
-				View::TITLE => "Comments associated to a node",
-				View::ASSETS => $assets,
-				View::CLASSNAME => __NAMESPACE__ . '\View',
-				View::PROVIDER => __NAMESPACE__ . '\ViewProvider',
-				View::RENDERS => View::RENDERS_MANY
+				ViewOptions::TITLE => "Comments associated to a node",
+				ViewOptions::ASSETS => $assets,
+				ViewOptions::PROVIDER_CLASSNAME => ViewOptions::PROVIDER_CLASSNAME_AUTO,
+				ViewOptions::RENDERS => ViewOptions::RENDERS_MANY
 			),
 
 			'submit' => array
 			(
-				View::TITLE => "Comment submit form",
-				View::ASSETS => $assets,
-				View::RENDERS => View::RENDERS_OTHER
+				ViewOptions::TITLE => "Comment submit form",
+				ViewOptions::ASSETS => $assets,
+				ViewOptions::RENDERS => ViewOptions::RENDERS_OTHER
 			)
 		);
 	}
