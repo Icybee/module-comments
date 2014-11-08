@@ -23,20 +23,19 @@ class ManageBlock extends \Icybee\ManageBlock
 		$document->js->add(DIR . 'public/admin.js');
 	}
 
-	public function __construct($module, array $attributes=array())
+	public function __construct($module, array $attributes=[])
 	{
-		parent::__construct
-		(
-			$module, $attributes + array
-			(
-				self::T_COLUMNS_ORDER => array
-				(
-					'comment', 'url', 'status', 'author', 'nid', 'created_at'
-				),
+		parent::__construct($module, $attributes + [
 
-				self::T_ORDER_BY => array('created_at', 'desc'),
-			)
-		);
+			self::T_COLUMNS_ORDER => [
+
+				'comment', 'url', 'status', 'author', 'nid', 'created_at'
+
+			],
+
+			self::T_ORDER_BY => [ 'created_at', 'desc' ]
+
+		]);
 	}
 
 	/**
@@ -53,15 +52,16 @@ class ManageBlock extends \Icybee\ManageBlock
 	 */
 	protected function get_available_columns()
 	{
-		return array_merge(parent::get_available_columns(), array
-		(
+		return array_merge(parent::get_available_columns(), [
+
 			'comment'           => __CLASS__ . '\CommentColumn',
 			'url'               => 'Icybee\Modules\Nodes\ManageBlock\URLColumn',
 			'status'            => __CLASS__ . '\StatusColumn',
 			Comment::AUTHOR     => __CLASS__ . '\AuthorColumn',
 			Comment::NID        => __CLASS__ . '\NodeColumn',
 			Comment::CREATED_AT => 'Icybee\ManageBlock\DateTimeColumn'
-		));
+
+		]);
 	}
 
 	/**
@@ -75,7 +75,7 @@ class ManageBlock extends \Icybee\ManageBlock
 		{
 			$value = $modifiers['status'];
 
-			if (in_array($value, array('approved', 'pending', 'spam')))
+			if (in_array($value, [ 'approved', 'pending', 'spam' ]))
 			{
 				$filters['status'] = $value;
 			}
@@ -90,10 +90,7 @@ class ManageBlock extends \Icybee\ManageBlock
 
 	protected function alter_query(Query $query, array $filters)
 	{
-		global $core;
-
-		return parent::alter_query($query, $filters)
-		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $core->site_id);
+		return $query->similar_site;
 	}
 }
 

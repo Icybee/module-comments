@@ -28,29 +28,31 @@ class Model extends ActiveRecord\Model
 	 * @throws \InvalidArgumentException if the value of the `notify` property is not one of `no`,
 	 * `yes`, `author` or `done`.
 	 */
-	public function save(array $properties, $key=null, array $options=array())
+	public function save(array $properties, $key=null, array $options=[])
 	{
 		if (!$key && empty($properties[Comment::CREATED_AT]))
 		{
 			$properties[Comment::CREATED_AT] = DateTime::now();
 		}
 
-		$properties += array
-		(
+		$properties += [
+
 			Comment::STATUS => 'pending',
 			Comment::NOTIFY => 'no',
 			Comment::UPDATED_AT => DateTime::now()
-		);
 
-		if (!in_array($properties[Comment::NOTIFY], array('no', 'yes', 'author', 'done')))
+		];
+
+		if (!in_array($properties[Comment::NOTIFY], [ 'no', 'yes', 'author', 'done' ]))
 		{
 			throw new \InvalidArgumentException(\ICanBoogie\format
 			(
-				'Invalid value for property %property: %value', array
-				(
+				'Invalid value for property %property: %value', [
+
 					'%property' => Comment::NOTIFY,
 					'%value' => $properties[Comment::NOTIFY]
-				)
+
+				]
 			));
 		}
 
@@ -94,6 +96,30 @@ class Model extends ActiveRecord\Model
 	}
 
 	/**
+	 * Filter the comments according to the site their node is attached to.
+	 *
+	 * @param Query $query
+	 * @param string $siteid Identifier of the site. If `null` `$app->site_id` is used instead.
+	 *
+	 * @return Query
+	 */
+	protected function scope_similar_site(Query $query, $siteid=null)
+	{
+		$app = $this->app;
+
+		if ($site_id === null)
+		{
+			$site_id = $app->site_id;
+		}
+
+		$siteid = $app->models['nodes']->select('nid, siteid');
+
+		return $query
+		->join($siteid, [ 'as' => 'similar_site', 'on' => 'nid' ])
+		->and('siteid = 0 OR siteid = ?', $site_id);
+	}
+
+	/**
 	 * Finds the nodes the records belong to.
 	 *
 	 * The `node` property of the records is set to the node they belong to.
@@ -104,7 +130,7 @@ class Model extends ActiveRecord\Model
 	 */
 	public function including_node(array $records)
 	{
-		$keys = array();
+		$keys = [];
 
 		foreach ($records as $record)
 		{
