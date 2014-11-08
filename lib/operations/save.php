@@ -12,9 +12,6 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\RecordNotFound;
-use ICanBoogie\I18n\FormattedString;
-use ICanBoogie\Mailer;
-use ICanBoogie\Operation;
 
 /**
  * Saves a comment.
@@ -23,10 +20,8 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 {
 	protected function lazy_get_properties()
 	{
-		global $core;
-
 		$properties = parent::lazy_get_properties();
-		$user = $core->user;
+		$user = $this->app->user;
 
 		if ($this->key)
 		{
@@ -39,7 +34,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		}
 		else
 		{
-			$properties[Comment::AUTHOR_IP] = $_SERVER['REMOTE_ADDR'];
+			$properties[Comment::AUTHOR_IP] = $this->request->ip;
 
 			if (!$user->is_guest)
 			{
@@ -54,7 +49,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		if (!$this->key && empty($properties['status']))
 		{
-			$node = $core->models['nodes'][$properties[Comment::NID]];
+			$node = $this->app->models['nodes'][$properties[Comment::NID]];
 			$properties['status'] = $node->site->metas->get($this->module->flat_id . '.default_status', 'pending');
 		}
 
@@ -63,8 +58,6 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 	protected function validate(\ICanboogie\Errors $errors)
 	{
-		global $core;
-
 		$request = $this->request;
 
 		$nid = $request[Comment::NID];
@@ -73,11 +66,11 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		{
 			try
 			{
-				$node = $core->models['nodes'][$nid];
+				$node = $this->app->models['nodes'][$nid];
 			}
 			catch (RecordNotFound $e)
 			{
-				$errors[Comment::NID] = new FormattedString('Invalid node identifier: %nid', array('nid' => $nid));
+				$errors[Comment::NID] = $errors->format('Invalid node identifier: %nid', [ 'nid' => $nid ]);
 
 				return false;
 			}
@@ -91,7 +84,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		{
 			if (!$nid)
 			{
-				$errors[Comment::NID] = new FormattedString('The node id is required to create a comment.');
+				$errors[Comment::NID] = $errors->format('The node id is required to create a comment.');
 
 				return false;
 			}
@@ -102,7 +95,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 			if ($this->module->model->where('author_ip = ? AND status = "spam"', $request->ip)->rc)
 			{
-				$errors[] = new FormattedString('A previous message from your IP was marked as spam.');
+				$errors[] = $errors->format('A previous message from your IP was marked as spam.');
 			}
 		}
 
@@ -110,16 +103,16 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		if ($author_url && !filter_var($author_url, FILTER_VALIDATE_URL))
 		{
-			$errors[] = new FormattedString('Invalide URL: %url', array('url' => $author_url));
+			$errors[] = $errors->format('Invalid URL: %url', [ 'url' => $author_url ]);
 		}
 
-		if (!$core->user_id)
+		if (!$this->app->user_id)
 		{
 			#
 			# delay between last post
 			#
 
-			$interval = $core->site->metas[$this->module->flat_id . '.delay'] ?: 5;
+			$interval = $this->app->site->metas[$this->module->flat_id . '.delay'] ?: 5;
 
 			$last = $this->module->model
 			->select('created_at')
@@ -133,7 +126,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 			if ($last)
 			{
-				$errors[] = new FormattedString("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
+				$errors[] = $errors->format("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
 			}
 		}
 
@@ -166,9 +159,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 	 */
 	protected function notify($commentid)
 	{
-		global $core;
-
-		$form_id = $core->site->metas['comments.form_id'];
+		$form_id = $this->app->site->metas['comments.form_id'];
 
 		if (!$form_id)
 		{
@@ -177,7 +168,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		try
 		{
-			$form = $core->models['forms'][$form_id];
+			$form = $this->app->models['forms'][$form_id];
 		}
 		catch (\Exception $e) { return; }
 
@@ -232,16 +223,17 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 			\ICanBoogie\log
 			(
-				'Send notify to %author (email: %email, message n°%commentid, mode: %notify)', array
-				(
+				'Send notify to %author (email: %email, message n°%commentid, mode: %notify)', [
+
 					'%author' => $entry->author,
 					'%email' => $entry->author_email,
 					'%commentid' => $entry->commentid,
 					'%notify' => $entry->notify
-				)
+
+				]
 			);
 
-			$rc = $core->mail([
+			$rc = $this->app->mail([
 
 				'to' => $entry->author_email,
 				'from' => $from,
@@ -254,7 +246,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 			if (!$rc)
 			{
-				\ICanBoogie\log_error('Unable to send notify to %author', array('%author' => $entry->author));
+				\ICanBoogie\log_error('Unable to send notify to %author', [ '%author' => $entry->author ]);
 
 				continue;
 			}

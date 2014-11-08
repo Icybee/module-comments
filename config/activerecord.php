@@ -11,7 +11,5 @@ return [
 			'nid' => __NAMESPACE__ . '\NidCriterion'
 
 		]
-
 	]
-
 ];

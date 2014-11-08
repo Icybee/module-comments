@@ -36,10 +36,7 @@ class Hooks
 		{
 			$metas = &$request->params['metas']['comments/reply'];
 
-			$metas += array
-			(
-				'is_notify' => null
-			);
+			$metas += [ 'is_notify' => null ];
 
 			$metas['is_notify'] = filter_var($metas['is_notify'], FILTER_VALIDATE_BOOLEAN);
 		}
@@ -80,9 +77,10 @@ class Hooks
 	 */
 	static public function on_node_collect_dependencies(\ICanBoogie\ActiveRecord\CollectDependenciesEvent $event, \Icybee\Modules\Nodes\Node $target)
 	{
-		global $core;
-
-		$records = $core->models['comments']->filter_by_nid($target->nid)->order('created_at DESC')->all;
+		$records = \ICanBoogie\app()->$core->models['comments']
+		->filter_by_nid($target->nid)
+		->order('created_at DESC')
+		->all;
 
 		foreach ($records as $record)
 		{
@@ -218,29 +216,34 @@ EOT
 	/**
 	 * Returns the approved comments associated with a node.
 	 *
-	 * @param Node $ar
+	 * @param Node $node
 	 *
 	 * @return array[]Node
 	 */
-	static public function get_comments(Node $ar)
+	static public function get_comments(Node $node)
 	{
-		global $core;
-
-		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->order('created_at')->all;
+		return \ICanBoogie\app()
+		->models['comments']
+		->approved
+		->filter_by_nid($node->nid)
+		->order('created_at')
+		->all;
 	}
 
 	/**
 	 * Returns the number of approved comments associated with a node.
 	 *
-	 * @param Node $ar
+	 * @param Node $node
 	 *
 	 * @return int
 	 */
-	static public function get_comments_count(Node $ar)
+	static public function get_comments_count(Node $node)
 	{
-		global $core;
-
-		return $core->models['comments']->where('nid = ? AND status = "approved"', $ar->nid)->count;
+		return \ICanBoogie\app()
+		->models['comments']
+		->approved
+		->filter_by_nid($node->nid)
+		->count;
 	}
 
 	/**
@@ -248,27 +251,30 @@ EOT
 	 *
 	 * The string is formated using the `comments.count` locale string.
 	 *
-	 * @param Node $ar
+	 * @param Node $node
 	 *
 	 * @return string
 	 */
-	static public function get_rendered_comments_count(Node $ar)
+	static public function get_rendered_comments_count(Node $node)
 	{
-		return I18n\t('comments.count', array(':count' => $ar->comments_count));
+		return I18n\t('comments.count', [ ':count' => $node->comments_count ]);
 	}
 
 	static public function including_comments_count(\Icybee\Modules\Nodes\Model $target, array $records)
 	{
-		global $core;
-
-		$keys = array();
+		$keys = [];
 
 		foreach ($records as $record)
 		{
 			$keys[$record->nid] = $record;
 		}
 
-		$counts = $core->models['comments']->approved->filter_by_nid(array_keys($keys))->count('nid');
+		$counts = \ICanBoogie\app()
+		->models['comments']
+		->approved
+		->filter_by_nid(array_keys($keys))
+		->count('nid');
+
 		$counts = $counts + array_combine(array_keys($keys), array_fill(0, count($keys), 0));
 
 		foreach ($counts as $nid => $count)
@@ -285,15 +291,13 @@ EOT
 
 	static public function markup_comments(array $args, \Patron\Engine $patron, $template)
 	{
-		global $core;
-
 		extract($args);
 
 		#
 		# build sql query
 		#
 
-		$model = $core->models['comments'];
+		$model = \ICanBoogie\app()->models['comments'];
 		$arr = $model->filter_by_status(Comment::STATUS_APPROVED);
 
 		if ($node)
@@ -474,8 +478,8 @@ EOT
 EOT;
 		}
 
-		$count = $model->joins(':nodes')->where('siteid = 0 OR siteid = ?', $core->site_id)->count;
-		$txt_all_comments = I18n\t('comments.count', array(':count' => $count));
+		$count = $model->similar_site->count;
+		$txt_all_comments = I18n\t('comments.count', [ ':count' => $count ]);
 
 		$rc .= <<<EOT
 <div class="panel-footer"><a href="$context/admin/comments">$txt_all_comments</a></div>

@@ -103,7 +103,7 @@ class Model extends ActiveRecord\Model
 	 *
 	 * @return Query
 	 */
-	protected function scope_similar_site(Query $query, $siteid=null)
+	protected function scope_similar_site(Query $query, $site_id=null)
 	{
 		$app = $this->app;
 

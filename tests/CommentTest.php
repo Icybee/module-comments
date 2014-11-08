@@ -83,7 +83,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
 					'commentid' => 123,
 					'uid' => 1,
-					'node' => Node::from(array('uid' => 1))
+					'node' => Node::from([ 'uid' => 1 ])
 				]
 			],
 
@@ -93,7 +93,7 @@ class CommentTest extends \PHPUnit_Framework_TestCase
 
 					'commentid' => 456,
 					'uid' => 123,
-					'node' => Node::from(array('uid' => 1))
+					'node' => Node::from([ 'uid' => 1 ])
 				]
 			]
 

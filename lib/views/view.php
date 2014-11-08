@@ -37,7 +37,7 @@ class View extends \Icybee\Modules\Views\View
 		{
 			$count = $this->provider->count;
 
-			$context['count'] = I18n\t('comments.count', array(':count' => $count));
+			$context['count'] = I18n\t('comments.count', [ ':count' => $count ]);
 		}
 
 		return $context;

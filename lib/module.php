@@ -17,25 +17,27 @@ class Module extends \Icybee\Module
 {
 	protected function lazy_get_views()
 	{
-		$assets = array('css' => DIR . 'public/page.css');
+		$assets = [ 'css' => DIR . 'public/page.css' ];
 
-		return array
-		(
-			'list' => array
-			(
+		return [
+
+			'list' => [
+
 				ViewOptions::TITLE => "Comments associated to a node",
 				ViewOptions::ASSETS => $assets,
 				ViewOptions::PROVIDER_CLASSNAME => ViewOptions::PROVIDER_CLASSNAME_AUTO,
 				ViewOptions::RENDERS => ViewOptions::RENDERS_MANY
-			),
 
-			'submit' => array
-			(
+			],
+
+			'submit' => [
+
 				ViewOptions::TITLE => "Comment submit form",
 				ViewOptions::ASSETS => $assets,
 				ViewOptions::RENDERS => ViewOptions::RENDERS_OTHER
-			)
-		);
+
+			]
+		];
 	}
 
 	/*

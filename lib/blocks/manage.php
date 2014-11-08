@@ -117,15 +117,13 @@ use Icybee\Modules\Comments\Comment;
  */
 class CommentColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
 	{
-		parent::__construct
-		(
-			$manager, $id, array
-			(
-				'orderable' => false
-			)
-		);
+		parent::__construct($manager, $id, [
+
+			'orderable' => false
+
+		]);
 	}
 
 	public function render_cell($record)
@@ -139,57 +137,55 @@ class CommentColumn extends Column
  */
 class StatusColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
 	{
-		parent::__construct
-		(
-			$manager, $id, $options + array
-			(
-				'class' => 'pull-right',
-				'orderable' => false,
-				'filters' => array
-				(
-					'options' => array
-					(
-						'=approved' => "Approved",
-						'=pending' => "Pending",
-						'=spam' => "Spam"
-					)
-				)
-			)
-		);
+		parent::__construct($manager, $id, $options + [
+
+			'class' => 'pull-right',
+			'orderable' => false,
+			'filters' => [
+
+				'options' => [
+
+					'=approved' => "Approved",
+					'=pending' => "Pending",
+					'=spam' => "Spam"
+
+				]
+			]
+		]);
 	}
 
 	public function render_cell($record)
 	{
-		static $labels = array
-		(
+		static $labels = [
+
 			Comment::STATUS_APPROVED => 'Approved',
 			Comment::STATUS_PENDING => 'Pending',
 			Comment::STATUS_SPAM => 'Spam'
-		);
 
-		static $classes = array
-		(
+		];
+
+		static $classes = [
+
 			Comment::STATUS_APPROVED => 'btn-success',
 			Comment::STATUS_PENDING => 'btn-warning',
 			Comment::STATUS_SPAM => 'btn-danger'
-		);
+
+		];
 
 		$status = $record->status;
 		$status_label = isset($labels[$status]) ? $labels[$status] : "<em>Invalid status code: $status</em>";
 		$status_class = isset($classes[$status]) ? $classes[$status] : 'btn-danger';
 		$commentid = $record->commentid;
 
-		$menu = new DropdownMenu
-		(
-			array
-			(
-				DropdownMenu::OPTIONS => $labels,
+		$menu = new DropdownMenu([
 
-				'value' => $status
-			)
-		);
+			DropdownMenu::OPTIONS => $labels,
+
+			'value' => $status
+
+		]);
 
 		$classes_json = \Brickrouge\escape(json_encode($classes));
 
@@ -243,16 +239,14 @@ class AuthorColumn extends Column
 
 		if ($record->author_email)
 		{
-			$rc .= new Element
-			(
-				'img', array
-				(
-					'src' => $record->author_icon . '&s=32',
-					'alt' => $record->author,
-					'width' => 32,
-					'height' => 32
-				)
-			);
+			$rc .= new Element('img', [
+
+				'src' => $record->author_icon . '&s=32',
+				'alt' => $record->author,
+				'width' => 32,
+				'height' => 32
+
+			]);
 		}
 
 		$rc .= '<div class="details">';
@@ -273,7 +267,7 @@ class AuthorColumn extends Column
 		if ($url)
 		{
 			$rc .= '<br /><span class="small">';
-			$rc .= new A($url, $url, array('target' => '_blank'));
+			$rc .= new A($url, $url, [ 'target' => '_blank' ]);
 			$rc .= '</span>';
 		}
 
@@ -288,15 +282,13 @@ class AuthorColumn extends Column
  */
 class NodeColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=array())
+	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
 	{
-		parent::__construct
-		(
-			$manager, $id, array
-			(
-				'orderable' => false
-			)
-		);
+		parent::__construct($manager, $id, [
+
+			'orderable' => false
+
+		]);
 	}
 
 	/**
@@ -319,14 +311,12 @@ class NodeColumn extends Column
 			$title = $node->title;
 			$label = \ICanBoogie\escape(\ICanBoogie\shorten($title, 48, .75, $shortened));
 
-			$rc .= new A
-			(
-				"", $node->url, array
-				(
-					'title' => $title,
-					'class' => 'icon-external-link'
-				)
-			) . ' ';
+			$rc .= new A("", $node->url, [
+
+				'title' => $title,
+				'class' => 'icon-external-link'
+
+			]) . ' ';
 		}
 		else
 		{

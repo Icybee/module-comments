@@ -18,7 +18,7 @@ class PreviewOperation extends \ICanBoogie\Operation
 {
 	protected function validate(\ICanboogie\Errors $errors)
 	{
-		return $this->request['contents'];
+		return !!$this->request['contents'];
 	}
 
 	protected function process()

@@ -2,11 +2,11 @@
 
 namespace Icybee\Modules\Comments;
 
-return array
-(
-	'submit_comment' => array
-	(
+return [
+
+	'submit_comment' => [
+
 		'title' => 'Add a comment',
 		'class' => __NAMESPACE__ . '\SubmitForm'
-	)
-);
+	]
+];

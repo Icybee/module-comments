@@ -33,6 +33,8 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	use \ICanBoogie\ActiveRecord\CreatedAtProperty;
 	use \ICanBoogie\ActiveRecord\UpdatedAtProperty;
 
+	const MODEL_ID = 'comments';
+
 	const COMMENTID = 'commentid';
 	const NID = 'nid';
 	const PARENTID = 'parentid';
@@ -130,14 +132,6 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	public $notify;
 
 	/**
-	 * Defaults model to "comments".
-	 */
-	public function __construct($model='comments')
-	{
-		parent::__construct($model);
-	}
-
-	/**
 	 * Returns the URL of the comment.
 	 *
 	 * The URL of the comment is created from the URL of the node and to identifier of the comment
@@ -173,13 +167,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	{
 		$hash = md5(strtolower(trim($this->author_email)));
 
-		return 'http://www.gravatar.com/avatar/' . $hash . '.jpg?' . http_build_query
-		(
-			array
-			(
-				'd' => 'identicon'
-			)
-		);
+		return 'http://www.gravatar.com/avatar/' . $hash . '.jpg?' . http_build_query([ 'd' => 'identicon' ]);
 	}
 
 	/**
@@ -221,12 +209,13 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	 */
 	protected function get_css_class_names()
 	{
-		return array
-		(
+		return [
+
 			'type' => 'comment',
 			'id' => 'comment-' . $this->commentid,
 			'author-reply' => $this->is_author
-		);
+
+		];
 	}
 
 	/**

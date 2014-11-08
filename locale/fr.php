@@ -1,35 +1,39 @@
 <?php
 
-return array
-(
-	'comments' => array
-	(
-		'count' => array
-		(
+return [
+
+	'comments' => [
+
+		'count' => [
+
 			'one' => 'Un commentaire',
 			'other' => ':count commentaires',
 			'none' => 'Pas de commentaire'
-		),
 
-		'delete' => array
-		(
+		],
+
+		'delete' => [
+
 			'Delete a record' => 'Supprimer un commentaire'
-		),
 
-		'name' => array
-		(
+		],
+
+		'name' => [
+
 			'one' => 'Commentaire',
 			'other' => 'Commentaires'
-		)
-	),
 
-	'comments.manager.label' => array
-	(
+		]
+	],
+
+	'comments.manager.label' => [
+
 		'author' => 'Auteur',
 		'comment' => 'Commentaire',
 		'nid' => 'Attaché à',
 		'score' => 'Note'
-	),
+
+	],
 
 	'module_title.comments' => 'Commentaires',
 
@@ -44,4 +48,5 @@ return array
 	'@form.log.spam' => "Votre message a été noté comme <em>indésirable</em>.
 	Cela peut se produire s'il est trop court ou comporte trop de liens. Merci de
 	le réviser."
-);
+
+];

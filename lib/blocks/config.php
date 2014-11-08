@@ -13,6 +13,7 @@ namespace Icybee\Modules\Comments;
 
 use Brickrouge\Element;
 use Brickrouge\Form;
+use Brickrouge\Group;
 use Brickrouge\Text;
 
 /**
@@ -22,24 +23,23 @@ class ConfigBlock extends \Icybee\ConfigBlock
 {
 	protected function lazy_get_attributes()
 	{
-		return \ICanBoogie\array_merge_recursive
-		(
-			parent::lazy_get_attributes(), array
-			(
-				Element::GROUPS => array
-				(
-					'response' => array
-					(
-						'title' => "Message de notification à l'auteur lors d'une réponse"
-					),
+		return \ICanBoogie\array_merge_recursive(parent::lazy_get_attributes(), [
 
-					'spam' => array
-					(
-						'title' => 'Paramètres anti-spam'
-					)
-				)
-			)
-		);
+			Element::GROUPS => [
+
+				'response' => [
+
+					'title' => "Message de notification à l'auteur lors d'une réponse"
+
+				],
+
+				'spam' => [
+
+					'title' => 'Paramètres anti-spam'
+
+				]
+			]
+		]);
 	}
 
 	protected function lazy_get_children()
@@ -48,51 +48,41 @@ class ConfigBlock extends \Icybee\ConfigBlock
 
 		$ns = $this->module->flat_id;
 
-		return array_merge
-		(
-			parent::lazy_get_children(), array
-			(
-				"local[$ns.form_id]" => new \Icybee\Modules\Forms\PopForm
-				(
-					'select', array
-					(
-						Form::LABEL => 'Formulaire',
-						Element::GROUP => 'primary',
-						Element::REQUIRED => true,
-						Element::DESCRIPTION => "Il s'agit du formulaire à utiliser pour la
-						saisie des commentaires."
-					)
-				),
+		return array_merge(parent::lazy_get_children(), [
 
-				"local[$ns.default_status]" => new Element
-				(
-					'select', array
-					(
-						Form::LABEL => 'Status par défaut',
-						Element::OPTIONS => array
-						(
-							'pending' => 'Pending',
-							'approved' => 'Approuvé'
-						),
-						Element::DESCRIPTION => "Il s'agit du status par défaut pour les nouveaux
-						commentaires."
-					)
-				),
+			"local[$ns.form_id]" => new \Icybee\Modules\Forms\PopForm('select', [
 
-				"local[$ns.delay]" => new Text
-				(
-					array
-					(
-						Form::LABEL => 'Intervale entre deux commentaires',
-						Text::ADDON => 'minutes',
-						Element::DEFAULT_VALUE => 3,
-						Element::GROUP => 'spam',
+				Group::LABEL => 'Formulaire',
+				Element::GROUP => 'primary',
+				Element::REQUIRED => true,
+				Element::DESCRIPTION => "Il s'agit du formulaire à utiliser pour la
+				saisie des commentaires."
 
-						'size' => 3,
-						'class' => 'measure'
-					)
-				)
-			)
-		);
+			]),
+
+			"local[$ns.default_status]" => new Element('select', [
+
+				Group::LABEL => 'Status par défaut',
+				Element::DESCRIPTION => "Il s'agit du status par défaut pour les nouveaux commentaires.",
+				Element::OPTIONS => [
+
+					'pending' => 'Pending',
+					'approved' => 'Approuvé'
+
+				]
+			]),
+
+			"local[$ns.delay]" => new Text([
+
+				Group::LABEL => 'Intervale entre deux commentaires',
+				Text::ADDON => 'minutes',
+				Element::DEFAULT_VALUE => 3,
+				Element::GROUP => 'spam',
+
+				'size' => 3,
+				'class' => 'measure'
+
+			])
+		]);
 	}
 }

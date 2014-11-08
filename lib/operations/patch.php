@@ -17,19 +17,18 @@ class PatchOperation extends \ICanBoogie\Operation
 {
 	protected function get_controls()
 	{
-		return array
-		(
-			self::CONTROL_PERMISSION => Module::PERMISSION_ADMINISTER
-		)
+		return [
 
-		+ parent::get_controls();
+			self::CONTROL_PERMISSION => Module::PERMISSION_ADMINISTER
+
+		] + parent::get_controls();
 	}
 
 	protected function validate(Errors $errors)
 	{
 		$status = $this->request['status'];
 
-		if ($status !== null && !in_array($status, array(Comment::STATUS_APPROVED, Comment::STATUS_PENDING, Comment::STATUS_SPAM)))
+		if ($status !== null && !in_array($status, [ Comment::STATUS_APPROVED, Comment::STATUS_PENDING, Comment::STATUS_SPAM ]))
 		{
 			throw new \InvalidArgumentException('Invalid status value: ' . $status);
 		}
@@ -40,24 +39,20 @@ class PatchOperation extends \ICanBoogie\Operation
 	protected function process()
 	{
 		$record = $this->record;
-
-		#
-
 		$status = $this->request['status'];
 
 		if ($status)
 		{
-			static $status_names = array
-			(
+			static $status_names = [
+
 				Comment::STATUS_APPROVED => 'Approved',
 				Comment::STATUS_PENDING => 'Pending',
 				Comment::STATUS_SPAM => 'Spam'
-			);
+
+			];
 
 			$record->status = $status;
 		}
-
-		#
 
 		$record->save();
 

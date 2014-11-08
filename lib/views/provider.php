@@ -12,7 +12,6 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\I18n;
 
 class ViewProvider extends \ICanBoogie\ActiveRecord\Fetcher
 {

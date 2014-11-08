@@ -12,7 +12,7 @@
 namespace Icybee\Modules\Comments;
 
 use Brickrouge\Element;
-use Brickrouge\Form;
+use Brickrouge\Group;
 use Brickrouge\Text;
 
 /**
@@ -24,92 +24,78 @@ class EditBlock extends \Icybee\EditBlock
 	{
 		$values = $this->values;
 
-		return array
-		(
-			Comment::AUTHOR => new Text
-			(
-				array
-				(
-					Form::LABEL => 'Author',
-					Element::REQUIRED => true
-				)
-			),
+		return [
 
-			Comment::AUTHOR_EMAIL => new Text
-			(
-				array
-				(
-					Form::LABEL => 'E-mail',
-					Element::REQUIRED => true
-				)
-			),
+			Comment::AUTHOR => new Text([
 
-			Comment::AUTHOR_URL => new Text
-			(
-				array
-				(
-					Form::LABEL => 'URL'
-				)
-			),
+				Group::LABEL => 'Author',
+				Element::REQUIRED => true
 
-			Comment::AUTHOR_IP => new Text
-			(
-				array
-				(
-					Form::LABEL => 'Adresse IP',
+			]),
 
-					'disabled' => true
-				)
-			),
+			Comment::AUTHOR_EMAIL => new Text([
 
-			Comment::CONTENTS => new Element
-			(
-				'textarea', array
-				(
-					Form::LABEL => 'Message',
-					Element::REQUIRED => true,
+				Group::LABEL => 'E-mail',
+				Element::REQUIRED => true
 
-					'rows' => 10
-				)
-			),
+			]),
 
-			Comment::NOTIFY => new Element
-			(
-				Element::TYPE_RADIO_GROUP, array
-				(
-					Form::LABEL => 'Notification',
-					Element::DEFAULT_VALUE => 'no',
-					Element::REQUIRED => true,
-					Element::OPTIONS => array
-					(
-						'yes' => 'Bien sûr !',
-						'author' => "Seulement si c'est l'auteur du billet qui répond",
-						'no' => 'Pas la peine, je viens tous les jours',
-						'done' => 'Notification envoyée'
-					),
+			Comment::AUTHOR_URL => new Text([
 
-					Element::DESCRIPTION => (($values[Comment::NOTIFY] == 'done') ? "Un
-					message de notification a été envoyé." : null),
+				Group::LABEL => 'URL'
 
-					'class' => 'inputs-list'
-				)
-			),
+			]),
 
-			Comment::STATUS => new Element
-			(
-				'select', array
-				(
-					Form::LABEL => 'Status',
-					Element::REQUIRED => true,
-					Element::OPTIONS => array
-					(
-						null => '',
-						'pending' => 'Pending',
-						'approved' => 'Aprouvé',
-						'spam' => 'Spam'
-					)
-				)
-			)
-		);
+			Comment::AUTHOR_IP => new Text([
+
+				Group::LABEL => 'Adresse IP',
+
+				'disabled' => true
+
+			]),
+
+			Comment::CONTENTS => new Element('textarea', [
+
+				Group::LABEL => 'Message',
+				Element::REQUIRED => true,
+
+				'rows' => 10
+
+			]),
+
+			Comment::NOTIFY => new Element(Element::TYPE_RADIO_GROUP, [
+
+				Group::LABEL => 'Notification',
+				Element::DEFAULT_VALUE => 'no',
+				Element::REQUIRED => true,
+				Element::OPTIONS => [
+
+					'yes' => 'Bien sûr !',
+					'author' => "Seulement si c'est l'auteur du billet qui répond",
+					'no' => 'Pas la peine, je viens tous les jours',
+					'done' => 'Notification envoyée'
+
+				],
+
+				Element::DESCRIPTION => (($values[Comment::NOTIFY] == 'done') ? "Un message de notification a été envoyé." : null),
+
+				'class' => 'inputs-list'
+
+			]),
+
+			Comment::STATUS => new Element('select', [
+
+				Group::LABEL => 'Status',
+				Element::REQUIRED => true,
+				Element::OPTIONS => [
+
+					null => '',
+					'pending' => 'Pending',
+					'approved' => 'Aprouvé',
+					'spam' => 'Spam'
+
+				]
+			])
+		];
 	}
 }
