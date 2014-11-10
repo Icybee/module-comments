@@ -60,6 +60,11 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 	{
 		$request = $this->request;
 
+		if ($request['link'])
+		{
+			throw new \Exception('It looks like you are a vile spam bot.');
+		}
+
 		$nid = $request[Comment::NID];
 
 		if ($nid)

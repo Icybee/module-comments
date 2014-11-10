@@ -45,7 +45,7 @@ class SubmitForm extends Form
 
 		parent::__construct(\ICanBoogie\array_merge_recursive($attributes, [
 
-				Form::RENDERER => 'Simple',
+				Form::RENDERER => 'Group',
 				Form::VALUES => $values,
 				Form::HIDDENS => [
 
@@ -74,6 +74,12 @@ class SubmitForm extends Form
 					Comment::AUTHOR_URL => new Text([
 
 						Element::LABEL => 'Website'
+
+					]),
+
+					'link' => new Text([
+
+						Element::LABEL => 'Link'
 
 					]),
 
@@ -109,11 +115,10 @@ class SubmitForm extends Form
 				Element::WIDGET_CONSTRUCTOR => 'SubmitComment',
 
 				'action' => '#view-comments-submit',
-				'class' => 'widget-submit-comment'
+				'class' => 'widget-submit-comment',
+				'name' => 'comments/submit'
 
-			]),
-
-			'div'
+			])
 		);
 	}
 
