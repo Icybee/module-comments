@@ -46,7 +46,7 @@ class Hooks
 	 * Deletes all the comments attached to a node.
 	 *
 	 * @param Operation\ProcessEvent $event
-	 * @param Icybee\Modules\Nodes\DeleteOperation $sender
+	 * @param \Icybee\Modules\Nodes\DeleteOperation $operation
 	 */
 	static public function on_node_delete(Operation\ProcessEvent $event, \Icybee\Modules\Nodes\DeleteOperation $operation)
 	{
@@ -77,7 +77,7 @@ class Hooks
 	 */
 	static public function on_node_collect_dependencies(\ICanBoogie\ActiveRecord\CollectDependenciesEvent $event, \Icybee\Modules\Nodes\Node $target)
 	{
-		$records = \ICanBoogie\app()->$core->models['comments']
+		$records = \ICanBoogie\app()->models['comments']
 		->filter_by_nid($target->nid)
 		->order('created_at DESC')
 		->all;
@@ -193,6 +193,9 @@ EOT
 		);
 	}
 
+	/**
+	 * @deprecated
+	 */
 	static public function on_view_render(Event $event, \Icybee\Modules\Views\View $view)
 	{
 		global $core;

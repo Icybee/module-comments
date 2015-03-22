@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Comments;
 
-use ICanBoogie\ActiveRecord\Criterion;
+use ICanBoogie\Facets\Criterion;
 
 class NidCriterion extends Criterion
 {
