@@ -18,11 +18,11 @@
 		"source": "https://github.com/Icybee/module-comments"
 	},
 	"require": {
-		"php": ">=5.4.0",
-		"icanboogie/module-installer": "~1.2",
+		"php": ">=5.5.0",
+		"icanboogie/module-installer": "~1.2.3",
 		"icanboogie/activerecord": "2.x",
 		"brickrouge/css-class-names": "2.x",
-		"icybee/module-nodes": "2.x"
+		"icybee/module-nodes": "2.1.x"
 	},
 	"autoload": {
 		"classmap": [ "lib/" ]
