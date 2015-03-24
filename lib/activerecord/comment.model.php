@@ -137,7 +137,7 @@ class Model extends ActiveRecord\Model
 			$keys[$record->nid] = $record;
 		}
 
-		$nodes = ActiveRecord\get_model('nodes')->find_using_constructor(array_keys($keys));
+		$nodes = $this->models['nodes']->find_using_constructor(array_keys($keys));
 
 		foreach ($nodes as $key => $node)
 		{

@@ -13,6 +13,7 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\Debug;
 use ICanBoogie\Event;
+use ICanBoogie\Facets\RecordCollection;
 use ICanBoogie\I18n;
 use ICanBoogie\Operation;
 
@@ -21,6 +22,7 @@ use Brickrouge\Form;
 use Brickrouge\Text;
 
 use Icybee\Modules\Nodes\Node;
+use Icybee\Modules\Nodes\Model as NodeModel;
 
 class Hooks
 {
@@ -252,7 +254,7 @@ EOT
 	/**
 	 * Returns the rendered number of comment associated with a node.
 	 *
-	 * The string is formated using the `comments.count` locale string.
+	 * The string is formatted using the `comments.count` locale string.
 	 *
 	 * @param Node $node
 	 *
@@ -260,32 +262,7 @@ EOT
 	 */
 	static public function get_rendered_comments_count(Node $node)
 	{
-		return I18n\t('comments.count', [ ':count' => $node->comments_count ]);
-	}
-
-	static public function including_comments_count(\Icybee\Modules\Nodes\Model $target, array $records)
-	{
-		$keys = [];
-
-		foreach ($records as $record)
-		{
-			$keys[$record->nid] = $record;
-		}
-
-		$counts = \ICanBoogie\app()
-		->models['comments']
-		->approved
-		->filter_by_nid(array_keys($keys))
-		->count('nid');
-
-		$counts = $counts + array_combine(array_keys($keys), array_fill(0, count($keys), 0));
-
-		foreach ($counts as $nid => $count)
-		{
-			$keys[$nid]->comments_count = $count;
-		}
-
-		return $records;
+		return I18n\t('comments.count', [ ':count' => $node->approved_comments_count ]);
 	}
 
 	/*
@@ -294,6 +271,13 @@ EOT
 
 	static public function markup_comments(array $args, \Patron\Engine $patron, $template)
 	{
+		/* @var $node int */
+		/* @var $noauthor bool */
+		/* @var $order string */
+		/* @var $limit int */
+		/* @var $page int */
+		/* @var $parseempty bool */
+
 		extract($args);
 
 		#
