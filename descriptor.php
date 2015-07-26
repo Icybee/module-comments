@@ -16,36 +16,27 @@ return [
 			Model::BELONGS_TO => [ 'nodes', 'users' ],
 			Model::SCHEMA => [
 
-				'fields' => [
+				'commentid' => 'serial',
+				'nid' => 'foreign',
+				'parentid' => 'foreign',
+				'uid' => 'foreign',
+				'author' => [ 'varchar', 32 ],
+				'author_email' => [ 'varchar', 64 ],
+				'author_url' => 'varchar',
+				'author_ip' => [ 'varchar', 45 ],
+				'contents' => 'text',
+				'status' => [ 'enum', [ 'pending', 'approved', 'spam' ], 'indexed' => true ],
+				'notify' => [ 'enum', [ 'no', 'yes', 'author', 'done' ], 'indexed' => true ],
+				'created_at' => [ 'timestamp', 'default' => 'CURRENT_TIMESTAMP' ],
+				'updated_at' => 'timestamp'
 
-					'commentid' => 'serial',
-					'nid' => 'foreign',
-					'parentid' => 'foreign',
-					'uid' => 'foreign',
-					'author' => [ 'varchar', 32 ],
-					'author_email' => [ 'varchar', 64 ],
-					'author_url' => 'varchar',
-					'author_ip' => [ 'varchar', 45 ],
-					'contents' => 'text',
-					'status' => [ 'enum', [ 'pending', 'approved', 'spam' ], 'indexed' => true ],
-					'notify' => [ 'enum', [ 'no', 'yes', 'author', 'done' ], 'indexed' => true ],
-					'created_at' => [ 'timestamp', 'default' => 'CURRENT_TIMESTAMP' ],
-					'updated_at' => 'timestamp'
-
-				]
 			]
 		]
 	],
 
 	Descriptor::NS => __NAMESPACE__,
-	Descriptor::REQUIRES => [
-
-		'nodes' => '1.0'
-
-	],
-
-	Descriptor::TITLE => 'Comments',
-	Descriptor::VERSION => '1.0'
+	Descriptor::REQUIRES => [ 'nodes' ],
+	Descriptor::TITLE => "Comments"
 
 ];
 

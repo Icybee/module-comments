@@ -1,6 +1,12 @@
 <?php
 
-return [
+namespace Icybee\Modules\Comments;
+
+use Icybee\Routing\RoutesMaker as Make;
+
+return Make::admin('comments', AdminController::class);
+
+/*[
 
 	'!admin:manage' => [
 
@@ -30,3 +36,4 @@ return [
 
 	]
 ];
+*/
