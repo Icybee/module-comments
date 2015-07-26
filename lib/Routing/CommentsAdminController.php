@@ -9,8 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Routing;
 
-use Icybee\Routing\RouteMaker as Make;
+use Icybee\Routing\AdminController;
 
-return Make::admin('comments', Routing\CommentsAdminController::class);
+class CommentsAdminController extends AdminController
+{
+
+}
