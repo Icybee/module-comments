@@ -52,11 +52,9 @@ class Hooks
 	 */
 	static public function on_node_delete(Operation\ProcessEvent $event, \Icybee\Modules\Nodes\DeleteOperation $operation)
 	{
-		global $core;
-
 		try
 		{
-			$model = $core->models['comments'];
+			$model = self::app()->models['comments'];
 		}
 		catch (\Exception $e)
 		{
@@ -79,7 +77,7 @@ class Hooks
 	 */
 	static public function on_node_collect_dependencies(\ICanBoogie\ActiveRecord\CollectDependenciesEvent $event, \Icybee\Modules\Nodes\Node $target)
 	{
-		$records = \ICanBoogie\app()->models['comments']
+		$records = self::app()->models['comments']
 		->filter_by_nid($target->nid)
 		->order('created_at DESC')
 		->all;
@@ -92,9 +90,7 @@ class Hooks
 
 	static public function alter_block_edit(Event $event)
 	{
-		global $core;
-
-		if (!isset($core->modules['comments']))
+		if (!isset(self::app()->modules['comments']))
 		{
 			return;
 		}
@@ -115,68 +111,56 @@ class Hooks
 
 		$ns = \ICanBoogie\escape($metas_prefix);
 
-		$event->tags = \ICanBoogie\array_merge_recursive
-		(
-			$event->tags, array
-			(
-				Form::VALUES => $values ? $values : array(),
+		$event->tags = \ICanBoogie\array_merge_recursive($event->tags, [
 
-				Element::CHILDREN => array
-				(
-					$key => new Element\Templated
-					(
-						'div', array
-						(
+				Form::VALUES => $values ? $values : [ ],
+
+				Element::CHILDREN => [
+
+					$key => new Element\Templated(
+
+						'div', [
+
 							Element::GROUP => 'notify',
-							Element::CHILDREN => array
-							(
-								$metas_prefix . '[is_notify]' => new Element
-								(
-									Element::TYPE_CHECKBOX, array
-									(
-										Element::LABEL => 'Activer la notification aux réponses',
-										Element::DESCRIPTION => "Cette option déclanche l'envoi
-										d'un email à l'auteur ayant choisi d'être informé d'une
-										réponse à son commentaire."
-									)
-								),
+							Element::CHILDREN => [
 
-								$metas_prefix . '[from]' => new Text
-								(
-									array
-									(
-										Form::LABEL => 'Adresse d\'expédition'
-									)
-								),
+								$metas_prefix . '[is_notify]' => new Element(Element::TYPE_CHECKBOX, [
 
-								$metas_prefix . '[bcc]' => new Text
-								(
-									array
-									(
-										Form::LABEL => 'Copie cachée'
-									)
-								),
+									Element::LABEL => 'Activer la notification aux réponses',
+									Element::DESCRIPTION => "Cette option déclanche l'envoi
+									d'un email à l'auteur ayant choisi d'être informé d'une
+									réponse à son commentaire."
 
-								$metas_prefix . '[subject]' => new Text
-								(
-									array
-									(
-										Form::LABEL => 'Sujet du message'
-									)
-								),
+								]),
 
-								$metas_prefix . '[template]' => new Element
-								(
-									'textarea', array
-									(
-										Form::LABEL => 'Patron du message',
-										Element::DESCRIPTION => "Le sujet du message et le corps du message
-										sont formatés par <a href=\"http://github.com/Weirdog/WdPatron\" target=\"_blank\">WdPatron</a>,
-										utilisez ses fonctionnalités avancées pour les personnaliser."
-									)
-								)
-							)
-						),
+								$metas_prefix . '[from]' => new Text([
+
+									Form::LABEL => 'Adresse d\'expédition'
+
+								]),
+
+								$metas_prefix . '[bcc]' => new Text([
+
+									Form::LABEL => 'Copie cachée'
+
+								]),
+
+								$metas_prefix . '[subject]' => new Text([
+
+									Form::LABEL => 'Sujet du message'
+
+								]),
+
+								$metas_prefix . '[template]' => new Element('textarea', [
+
+									Form::LABEL => 'Patron du message',
+									Element::DESCRIPTION => "Le sujet du message et le corps du message
+									sont formatés par <a href=\"http://github.com/Weirdog/WdPatron\" target=\"_blank\">WdPatron</a>,
+									utilisez ses fonctionnalités avancées pour les personnaliser."
+
+								])
+							]
+						],
 
 						<<<EOT
 <div class="panel">
@@ -190,8 +174,8 @@ class Hooks
 </div>
 EOT
 					)
-				)
-			)
+				]
+			]
 		);
 	}
 
@@ -200,14 +184,12 @@ EOT
 	 */
 	static public function on_view_render(Event $event, \Icybee\Modules\Views\View $view)
 	{
-		global $core;
-
 		if ($view->id != 'articles/view')
 		{
 			return;
 		}
 
-		$editor = $core->editors['view'];
+		$editor = self::app()->editors['view'];
 		$list = $editor->render('comments/list');
 		$submit = $editor->render('comments/submit');
 
@@ -223,11 +205,11 @@ EOT
 	 *
 	 * @param Node $node
 	 *
-	 * @return array[]Node
+	 * @return Node[]
 	 */
 	static public function get_comments(Node $node)
 	{
-		return \ICanBoogie\app()
+		return self::app()
 		->models['comments']
 		->approved
 		->filter_by_nid($node->nid)
@@ -244,7 +226,7 @@ EOT
 	 */
 	static public function get_comments_count(Node $node)
 	{
-		return \ICanBoogie\app()
+		return self::app()
 		->models['comments']
 		->approved
 		->filter_by_nid($node->nid)
@@ -284,7 +266,7 @@ EOT
 		# build sql query
 		#
 
-		$model = \ICanBoogie\app()->models['comments'];
+		$model = self::app()->models['comments'];
 		$arr = $model->filter_by_status(Comment::STATUS_APPROVED);
 
 		if ($node)
@@ -321,38 +303,37 @@ EOT
 
 	static public function markup_form(array $args, \Patron\Engine $patron, $template)
 	{
-		global $core;
-
 		#
 		# Obtain the form to use to add a comment from the 'forms' module.
 		#
 
-		$module = $core->modules['comments'];
-		$form_id = $core->site->metas['comments.form_id'];
+		$app = self::app();
+		$module = $app->modules['comments'];
+		$form_id = $app->site->metas['comments.form_id'];
 
 		if (!$form_id)
 		{
 			throw new \ICanBoogie\Exception\Config($module);
 		}
 
-		if (!$core->user->has_permission(\ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
+		if (!$app->user->has_permission(\ICanBoogie\Module::PERMISSION_CREATE, 'comments'))
 		{
 			if (Debug::$mode != Debug::MODE_DEV)
 			{
-				return;
+				return null;
 			}
 
 			return new \Brickrouge\Alert
 			(
 				<<<EOT
 You don't have permission the create comments,
-<a href="{$core->site->path}/admin/users.roles">the <q>Visitor</q> role should be modified.</a>
+<a href="{$app->site->path}/admin/users.roles">the <q>Visitor</q> role should be modified.</a>
 EOT
 , array(), 'error'
 			);
 		}
 
-		$form = $core->models['forms'][$form_id];
+		$form = $app->models['forms'][$form_id];
 
 		if (!$form)
 		{
@@ -365,16 +346,16 @@ EOT
 
 		if (!$form->is_online)
 		{
-			return;
+			return null;
 		}
 
-		new \BlueTihi\Context\LoadedNodesEvent($patron->context, array($form));
+		new \BlueTihi\Context\LoadedNodesEvent($patron->context, [ $form ]);
 
 		#
 		# Traget Id for the comment
 		#
 
-		$page = $core->request->context->page;
+		$page = $app->request->context->page;
 
 		$form->form->hiddens[Comment::NID] = $page->node ? $page->node->nid : $page->nid;
 		$form->form->add_class('wd-feedback-comments');
@@ -388,19 +369,19 @@ EOT
 
 	static public function dashboard_last()
 	{
-		global $core;
+		$app = self::app();
 
-		if (empty($core->modules['comments']))
+		if (empty($app->modules['comments']))
 		{
-			return;
+			return null;
 		}
 
-		$document = $core->document;
+		$document = $app->document;
 		$document->css->add('../public/admin.css');
 
-		$model = $core->models['comments'];
+		$model = $app->models['comments'];
 		$entries = $model
-		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $core->site_id)
+		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $app->site_id)
 		->order('created_at DESC')->limit(5)->all;
 
 		if (!$entries)
@@ -411,7 +392,7 @@ EOT
 		$model->including_node($entries);
 
 		$rc = '';
-		$context = $core->site->path;
+		$context = $app->site->path;
 
 		foreach ($entries as $entry)
 		{
@@ -473,5 +454,17 @@ EOT;
 EOT;
 
 		return $rc;
+	}
+
+	/*
+	 * Support
+	 */
+
+	/**
+	 * @return \ICanBoogie\Core|\Icybee\Binding\CoreBindings
+	 */
+	static private function app()
+	{
+		return \ICanBoogie\app();
 	}
 }

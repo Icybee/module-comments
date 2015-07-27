@@ -44,8 +44,6 @@ class ConfigBlock extends \Icybee\ConfigBlock
 
 	protected function lazy_get_children()
 	{
-		global $core;
-
 		$ns = $this->module->flat_id;
 
 		return array_merge(parent::lazy_get_children(), [

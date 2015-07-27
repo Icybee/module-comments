@@ -22,7 +22,7 @@ The `get_comments` prototype method returns the approved comments associated wit
 ```php
 <?php
 
-$core->models['articles']->one->comments;
+$app->models['articles']->one->comments;
 ```
 
 
@@ -37,7 +37,7 @@ a node.
 ```php
 <?php
 
-$core->models['articles']->one->comments_count;
+$app->models['articles']->one->comments_count;
 ```
 
 
