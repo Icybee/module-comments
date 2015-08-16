@@ -11,12 +11,15 @@
 
 namespace Icybee\Modules\Comments;
 
+use ICanBoogie\Errors;
+use ICanBoogie\Operation;
+
 /**
  * Gives the user a visual feedback of the message he's typing.
  */
-class PreviewOperation extends \ICanBoogie\Operation
+class PreviewOperation extends Operation
 {
-	protected function validate(\ICanboogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		return !!$this->request['contents'];
 	}

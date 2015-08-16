@@ -12,23 +12,27 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord;
-use ICanBoogie\ActiveRecord\CriterionList;
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\DateTime;
+use Icybee\Binding\ObjectBindings;
 
 /**
  * Comments model.
  */
 class Model extends ActiveRecord\Model
 {
+	use ObjectBindings;
+
 	/**
 	 * Adds the `status` and `notify` properties if they are not defined, they default to
 	 * `pending` and `no`.
 	 *
 	 * @throws \InvalidArgumentException if the value of the `notify` property is not one of `no`,
 	 * `yes`, `author` or `done`.
+	 *
+	 * @inheritdoc
 	 */
-	public function save(array $properties, $key=null, array $options=[])
+	public function save(array $properties, $key = null, array $options = [])
 	{
 		if (!$key && empty($properties[Comment::CREATED_AT]))
 		{
@@ -90,7 +94,7 @@ class Model extends ActiveRecord\Model
 	 *
 	 * @return Query
 	 */
-	protected function scope_spam(Query $query, $approved=true)
+	protected function scope_spam(Query $query)
 	{
 		return $query->filter_by_status(Comment::STATUS_SPAM);
 	}
@@ -99,11 +103,11 @@ class Model extends ActiveRecord\Model
 	 * Filter the comments according to the site their node is attached to.
 	 *
 	 * @param Query $query
-	 * @param string $siteid Identifier of the site. If `null` `$app->site_id` is used instead.
+	 * @param string $site_id Identifier of the site. If `null` `$app->site_id` is used instead.
 	 *
 	 * @return Query
 	 */
-	protected function scope_similar_site(Query $query, $site_id=null)
+	protected function scope_similar_site(Query $query, $site_id = null)
 	{
 		$app = $this->app;
 

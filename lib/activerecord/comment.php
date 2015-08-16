@@ -11,14 +11,17 @@
 
 namespace Icybee\Modules\Comments;
 
+use ICanBoogie\ActiveRecord;
 use ICanBoogie\DateTime;
+
+use Brickrouge\CSSClassNames;
+use Brickrouge\CSSClassNamesProperty;
 
 /**
  * A comment.
  *
  * @property DateTime $created_at The date and time at which the node was created.
  * @property DateTime $updated_at The date and time at which the node was updated.
- * @property-read string $absolute_url URL of the comment.
  * @property-read string $author_icon URL of the author's Gravatar.
  * @property-read string $css_class A suitable string for the HTML `class` attribute.
  * @property-read array $css_class_names CSS class names.
@@ -26,12 +29,13 @@ use ICanBoogie\DateTime;
  * @property-read bool $is_author `true` if the author of the comment is the author of the attached node.
  * @property-read \Icybee\Modules\Nodes\Node $node The node the comment is attached to.
  * @property-read string $url URL of the comment relative to the website.
+ * @property-read string $absolute_url URL of the comment.
  */
-class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNames
+class Comment extends ActiveRecord implements CSSClassNames
 {
-	use \Brickrouge\CSSClassNamesProperty;
-	use \ICanBoogie\ActiveRecord\CreatedAtProperty;
-	use \ICanBoogie\ActiveRecord\UpdatedAtProperty;
+	use CSSClassNamesProperty;
+	use ActiveRecord\CreatedAtProperty;
+	use ActiveRecord\UpdatedAtProperty;
 
 	const MODEL_ID = 'comments';
 
@@ -205,7 +209,7 @@ class Comment extends \ICanBoogie\ActiveRecord implements \Brickrouge\CSSClassNa
 	/**
 	 * Returns the CSS class names of the comment.
 	 *
-	 * @return array[string]mixed
+	 * @return array
 	 */
 	protected function get_css_class_names()
 	{

@@ -13,6 +13,9 @@ namespace Icybee\Modules\Comments;
 
 use ICanBoogie\I18n;
 
+use BlueTihi\Context;
+
+use Icybee\Modules\Nodes\Node;
 use Icybee\Modules\Views\ViewOptions;
 
 class View extends \Icybee\Modules\Views\View
@@ -21,7 +24,7 @@ class View extends \Icybee\Modules\Views\View
 	{
 		$bind = $this->engine->context['this'];
 
-		if ($bind instanceof \Icybee\Modules\Nodes\Node)
+		if ($bind instanceof Node)
 		{
 			$conditions['nid'] = $bind->nid;
 		}
@@ -29,7 +32,7 @@ class View extends \Icybee\Modules\Views\View
 		return parent::provide($provider, $conditions);
 	}
 
-	protected function alter_context(\BlueTihi\Context $context)
+	protected function alter_context(Context $context)
 	{
 		$context = parent::alter_context($context);
 
@@ -37,7 +40,7 @@ class View extends \Icybee\Modules\Views\View
 		{
 			$count = $this->provider->count;
 
-			$context['count'] = I18n\t('comments.count', [ ':count' => $count ]);
+			$context['count'] = $this->app->translate('comments.count', [ ':count' => $count ]);
 		}
 
 		return $context;

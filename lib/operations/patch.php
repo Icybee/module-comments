@@ -12,8 +12,12 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\Errors;
+use ICanBoogie\Operation;
 
-class PatchOperation extends \ICanBoogie\Operation
+/**
+ * @property Comment $record
+ */
+class PatchOperation extends Operation
 {
 	protected function get_controls()
 	{
@@ -43,14 +47,6 @@ class PatchOperation extends \ICanBoogie\Operation
 
 		if ($status)
 		{
-			static $status_names = [
-
-				Comment::STATUS_APPROVED => 'Approved',
-				Comment::STATUS_PENDING => 'Pending',
-				Comment::STATUS_SPAM => 'Spam'
-
-			];
-
 			$record->status = $status;
 		}
 

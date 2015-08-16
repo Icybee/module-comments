@@ -11,6 +11,11 @@
 
 namespace Icybee\Modules\Comments;
 
+use ICanBoogie\ActiveRecord;
+
+/**
+ * @property Comment $record
+ */
 class DeleteBlock extends \Icybee\DeleteBlock
 {
 	protected function get_record_name()
@@ -18,7 +23,14 @@ class DeleteBlock extends \Icybee\DeleteBlock
 		return \ICanBoogie\shorten($this->record->contents, 32, 1);
 	}
 
-	protected function render_preview(\ICanBoogie\ActiveRecord $record)
+	/**
+	 * @inheritdoc
+	 *
+	 * @param ActiveRecord|Comment $record
+	 *
+	 * @return string
+	 */
+	protected function render_preview(ActiveRecord $record)
 	{
 		return \ICanBoogie\escape($record->contents);
 	}

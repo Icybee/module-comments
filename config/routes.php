@@ -13,4 +13,8 @@ namespace Icybee\Modules\Comments;
 
 use Icybee\Routing\RouteMaker as Make;
 
-return Make::admin('comments', Routing\CommentsAdminController::class);
+return Make::admin('comments', Routing\CommentsAdminController::class, [
+
+	'id_name' => 'commentid'
+
+]);

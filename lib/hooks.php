@@ -11,6 +11,7 @@
 
 namespace Icybee\Modules\Comments;
 
+use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\Debug;
 use ICanBoogie\Event;
 use ICanBoogie\Facets\RecordCollection;
@@ -244,7 +245,7 @@ EOT
 	 */
 	static public function get_rendered_comments_count(Node $node)
 	{
-		return I18n\t('comments.count', [ ':count' => $node->approved_comments_count ]);
+		return self::app()->translate('comments.count', [ ':count' => $node->approved_comments_count ]);
 	}
 
 	/*
@@ -267,6 +268,8 @@ EOT
 		#
 
 		$model = self::app()->models['comments'];
+
+		/* @var $arr Query */
 		$arr = $model->filter_by_status(Comment::STATUS_APPROVED);
 
 		if ($node)
@@ -293,7 +296,7 @@ EOT
 
 		if (!$records && !$parseempty)
 		{
-			return;
+			return null;
 		}
 
 		$model->including_node($records);
@@ -377,7 +380,7 @@ EOT
 		}
 
 		$document = $app->document;
-		$document->css->add('../public/admin.css');
+		$document->css->add(DIR . 'public/admin.css');
 
 		$model = $app->models['comments'];
 		$entries = $model
@@ -386,7 +389,7 @@ EOT
 
 		if (!$entries)
 		{
-			return '<p class="nothing">' . I18n\t('No record yet') . '</p>';
+			return '<p class="nothing">' . $app->translate('No record yet') . '</p>';
 		}
 
 		$model->including_node($entries);
@@ -420,9 +423,9 @@ EOT
 
 			$date = \ICanBoogie\I18n\format_date($entry->created_at, 'dd MMM');
 
-			$txt_delete = I18n\t('Delete');
-			$txt_edit = I18n\t('Edit');
-			$txt_display_associated_node = I18n\t('Display associated node');
+			$txt_delete = $app->translate('Delete');
+			$txt_edit = $app->translate('Edit');
+			$txt_display_associated_node = $app->translate('Display associated node');
 
 			$rc .= <<<EOT
 <div class="record $entry_class">
@@ -447,7 +450,7 @@ EOT;
 		}
 
 		$count = $model->similar_site->count;
-		$txt_all_comments = I18n\t('comments.count', [ ':count' => $count ]);
+		$txt_all_comments = $app->translate('comments.count', [ ':count' => $count ]);
 
 		$rc .= <<<EOT
 <div class="panel-footer"><a href="$context/admin/comments">$txt_all_comments</a></div>

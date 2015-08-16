@@ -12,12 +12,19 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\RecordNotFound;
+use ICanBoogie\Errors;
+use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Nodes\Node;
 
 /**
  * Saves a comment.
+ *
+ * @property Comment $record
  */
 class SaveOperation extends \ICanBoogie\SaveOperation
 {
+	use ObjectBindings;
+
 	protected function lazy_get_properties()
 	{
 		$properties = parent::lazy_get_properties();
@@ -49,6 +56,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		if (!$this->key && empty($properties['status']))
 		{
+			/* @var $node Node */
 			$node = $this->app->models['nodes'][$properties[Comment::NID]];
 			$properties['status'] = $node->site->metas->get($this->module->flat_id . '.default_status', 'pending');
 		}
@@ -56,7 +64,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		return $properties;
 	}
 
-	protected function validate(\ICanboogie\Errors $errors)
+	protected function validate(Errors $errors)
 	{
 		$request = $this->request;
 
@@ -67,18 +75,11 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		$nid = $request[Comment::NID];
 
-		if ($nid)
+		if ($nid && !$this->app->models['nodes']->exists($nid))
 		{
-			try
-			{
-				$node = $this->app->models['nodes'][$nid];
-			}
-			catch (RecordNotFound $e)
-			{
-				$errors[Comment::NID] = $errors->format('Invalid node identifier: %nid', [ 'nid' => $nid ]);
+			$errors[Comment::NID] = $errors->format('Invalid node identifier: %nid', [ 'nid' => $nid ]);
 
-				return false;
-			}
+			return false;
 		}
 
 		#
@@ -148,9 +149,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 			if ($this->properties['status'] == 'approved')
 			{
-				$comment = $this->module->model[$rc['key']];
-
-				$this->response->location = $comment->url;
+				$this->response->location = $this->record->url;
 			}
 		}
 
@@ -160,9 +159,9 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 	/**
 	 * Notify users that a reply to their comment has been posted.
 	 *
-	 * @param int $commentid
+	 * @param int $comment_id
 	 */
-	protected function notify($commentid)
+	protected function notify($comment_id)
 	{
 		$form_id = $this->app->site->metas['comments.form_id'];
 
@@ -185,7 +184,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		}
 
 		$model = $this->module->model;
-		$comment = $model[$commentid];
+		$comment = $this->record;
 
 		#
 		# search previous message for notify
@@ -195,7 +194,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		(
 			'nid = ? AND `{primary}` < ? AND (`notify` = "yes" OR `notify` = "author") AND author_email != ?',
 
-			$comment->nid, $commentid, $comment->author_email
+			$comment->nid, $comment_id, $comment->author_email
 		)
 		->all;
 

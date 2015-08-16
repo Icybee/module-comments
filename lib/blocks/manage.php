@@ -117,7 +117,7 @@ use Icybee\Modules\Comments\Comment;
  */
 class CommentColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
+	public function __construct(ManageBlock $manager, $id, array $options = [])
 	{
 		parent::__construct($manager, $id, [
 
@@ -137,7 +137,7 @@ class CommentColumn extends Column
  */
 class StatusColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
+	public function __construct(ManageBlock $manager, $id, array $options = [])
 	{
 		parent::__construct($manager, $id, $options + [
 
@@ -156,6 +156,11 @@ class StatusColumn extends Column
 		]);
 	}
 
+	/**
+	 * @param Comment $record
+	 *
+	 * @inheritdoc
+	 */
 	public function render_cell($record)
 	{
 		static $labels = [
@@ -205,6 +210,8 @@ class AuthorColumn extends Column
 {
 	/**
 	 * Filters the records according to the `email` column.
+	 *
+	 * @inheritdoc
 	 */
 	public function alter_query_with_filter(Query $query, $filter_value)
 	{
@@ -218,6 +225,8 @@ class AuthorColumn extends Column
 
 	/**
 	 * Orders the records according to the `author` column.
+	 *
+	 * @inheritdoc
 	 */
 	public function alter_query_with_order(Query $query, $order_direction)
 	{
@@ -226,6 +235,11 @@ class AuthorColumn extends Column
 
 	private $discreet_value;
 
+	/**
+	 * @param Comment $record
+	 *
+	 * @inheritdoc
+	 */
 	public function render_cell($record)
 	{
 		if ($this->discreet_value == $record->author_email)
@@ -282,7 +296,7 @@ class AuthorColumn extends Column
  */
 class NodeColumn extends Column
 {
-	public function __construct(\Icybee\ManageBlock $manager, $id, array $options=[])
+	public function __construct(ManageBlock $manager, $id, array $options = [])
 	{
 		parent::__construct($manager, $id, [
 
@@ -293,12 +307,21 @@ class NodeColumn extends Column
 
 	/**
 	 * Loads the nodes associated with the comments.
+	 *
+	 * @param Comment[] $records
+	 *
+	 * @inheritdoc
 	 */
 	public function alter_records(array $records)
 	{
 		return $this->manager->model->including_node($records);
 	}
 
+	/**
+	 * @param Comment $record
+	 *
+	 * @inheritdoc
+	 */
 	public function render_cell($record)
 	{
 		$property = $this->id;
