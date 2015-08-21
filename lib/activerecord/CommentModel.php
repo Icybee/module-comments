@@ -14,12 +14,13 @@ namespace Icybee\Modules\Comments;
 use ICanBoogie\ActiveRecord;
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\DateTime;
+
 use Icybee\Binding\ObjectBindings;
 
 /**
  * Comments model.
  */
-class Model extends ActiveRecord\Model
+class CommentModel extends ActiveRecord\Model
 {
 	use ObjectBindings;
 

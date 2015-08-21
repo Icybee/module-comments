@@ -23,7 +23,7 @@ use Brickrouge\Form;
 use Brickrouge\Text;
 
 use Icybee\Modules\Nodes\Node;
-use Icybee\Modules\Nodes\Model as NodeModel;
+use Icybee\Modules\Nodes\NodeModel as NodeModel;
 
 class Hooks
 {
