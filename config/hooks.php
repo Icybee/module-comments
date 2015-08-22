@@ -16,14 +16,6 @@ return [
 
 	],
 
-	'prototypes' => [
-
-		'Icybee\Modules\Nodes\Node::lazy_get_comments' => $hooks . 'get_comments',
-		'Icybee\Modules\Nodes\Node::lazy_get_comments_count' => $hooks . 'get_comments_count',
-		'Icybee\Modules\Nodes\Node::lazy_get_rendered_comments_count' => $hooks . 'get_rendered_comments_count'
-
-	],
-
 	'patron.markups' => [
 
 		'comments' => [ $hooks . 'markup_comments', [
