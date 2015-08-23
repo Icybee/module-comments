@@ -11,14 +11,15 @@
 
 namespace Icybee\Modules\Comments;
 
-use ICanBoogie\ActiveRecord\RecordNotFound;
 use ICanBoogie\Errors;
+
 use Icybee\Binding\ObjectBindings;
 use Icybee\Modules\Nodes\Node;
 
 /**
  * Saves a comment.
  *
+ * @property \ICanBoogie\Core|\Icybee\Binding\CoreBindings|\ICanBoogie\Binding\Mailer\CoreBindings $app
  * @property Comment $record
  */
 class SaveOperation extends \ICanBoogie\SaveOperation
@@ -172,6 +173,8 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		try
 		{
+			/* @var $form \Icybee\Modules\Forms\Form */
+
 			$form = $this->app->models['forms'][$form_id];
 		}
 		catch (\Exception $e) { return; }
@@ -185,6 +188,8 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 
 		$model = $this->module->model;
 		$comment = $this->record;
+
+		/* @var $records Comment[] */
 
 		#
 		# search previous message for notify
@@ -207,7 +212,7 @@ class SaveOperation extends \ICanBoogie\SaveOperation
 		# prepare subject and message
 		#
 
-		$patron = new \Patron\Engine();
+		$patron = \Patron\get_patron();
 		$subject = $patron($options['subject'], $comment);
 		$message = $patron($options['template'], $comment);
 

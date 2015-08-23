@@ -111,6 +111,7 @@ use Icybee\ManageBlock\Column;
 use Icybee\ManageBlock\EditDecorator;
 use Icybee\ManageBlock\FilterDecorator;
 use Icybee\Modules\Comments\Comment;
+use Icybee\Modules\Comments\CommentModel;
 
 /**
  * Representation of the `comment` column.
@@ -314,7 +315,11 @@ class NodeColumn extends Column
 	 */
 	public function alter_records(array $records)
 	{
-		return $this->manager->model->including_node($records);
+		/* @var $comment_model CommentModel */
+
+		$comment_model = $this->manager->model;
+
+		return $comment_model->including_node($records);
 	}
 
 	/**

@@ -267,6 +267,8 @@ EOT
 		# build sql query
 		#
 
+		/* @var $model CommentModel */
+
 		$model = self::app()->models['comments'];
 
 		/* @var $arr Query */
@@ -381,6 +383,8 @@ EOT
 
 		$document = $app->document;
 		$document->css->add(DIR . 'public/admin.css');
+
+		/* @var $model CommentModel */
 
 		$model = $app->models['comments'];
 		$entries = $model

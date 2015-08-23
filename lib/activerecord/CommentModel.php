@@ -142,7 +142,10 @@ class CommentModel extends ActiveRecord\Model
 			$keys[$record->nid] = $record;
 		}
 
-		$nodes = $this->models['nodes']->find_using_constructor(array_keys($keys));
+		/* @var $node_model \Icybee\Modules\Nodes\NodeModel */
+
+		$node_model = $this->models['nodes'];
+		$nodes = $node_model->find_using_constructor(array_keys($keys));
 
 		foreach ($nodes as $key => $node)
 		{
