@@ -2,19 +2,9 @@
 
 namespace Icybee\Modules\Comments;
 
-$hooks = __NAMESPACE__ . '\Hooks::';
+$hooks = Hooks::class . '::';
 
 return [
-
-	'events' => [
-
-		'Icybee\Modules\Nodes\SaveOperation::process:before' => $hooks . 'before_node_save',
-		'Icybee\Modules\Nodes\DeleteOperation::process' => $hooks . 'on_node_delete',
-		'Icybee\Modules\Nodes\Node::collect_dependencies' => $hooks . 'on_node_collect_dependencies',
-		'Icybee\Modules\Forms\Module::alter.block.edit' => $hooks . 'alter_block_edit', // FIXME-20120922: this event is no longer fired
-//		'Icybee\Modules\Views\View::render' => $hooks . 'on_view_render'
-
-	],
 
 	'patron.markups' => [
 
