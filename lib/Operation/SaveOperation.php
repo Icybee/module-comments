@@ -9,11 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Operation;
 
 use ICanBoogie\Errors;
+use ICanBoogie\Module;
 
 use Icybee\Binding\ObjectBindings;
+use Icybee\Modules\Comments\Comment;
 use Icybee\Modules\Nodes\Node;
 
 /**
@@ -22,7 +24,7 @@ use Icybee\Modules\Nodes\Node;
  * @property \ICanBoogie\Core|\Icybee\Binding\CoreBindings|\ICanBoogie\Binding\Mailer\CoreBindings $app
  * @property Comment $record
  */
-class SaveOperation extends \ICanBoogie\SaveOperation
+class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 {
 	use ObjectBindings;
 

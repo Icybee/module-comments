@@ -9,10 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Operation;
 
 use ICanBoogie\Errors;
+use ICanBoogie\Module;
 use ICanBoogie\Operation;
+
+use Icybee\Modules\Comments\Comment;
 
 /**
  * @property Comment $record

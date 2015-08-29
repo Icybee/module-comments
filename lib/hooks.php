@@ -31,7 +31,7 @@ class Hooks
 	 * Events
 	 */
 
-	static public function before_node_save(Operation\BeforeProcessEvent $event, \Icybee\Modules\Nodes\SaveOperation $sender)
+	static public function before_node_save(Operation\BeforeProcessEvent $event, \Icybee\Modules\Nodes\Operation\SaveOperation $sender)
 	{
 		$request = $event->request;
 
@@ -49,9 +49,9 @@ class Hooks
 	 * Deletes all the comments attached to a node.
 	 *
 	 * @param Operation\ProcessEvent $event
-	 * @param \Icybee\Modules\Nodes\DeleteOperation $operation
+	 * @param \Icybee\Modules\Nodes\Operation\DeleteOperation $operation
 	 */
-	static public function on_node_delete(Operation\ProcessEvent $event, \Icybee\Modules\Nodes\DeleteOperation $operation)
+	static public function on_node_delete(Operation\ProcessEvent $event, \Icybee\Modules\Nodes\Operation\DeleteOperation $operation)
 	{
 		try
 		{

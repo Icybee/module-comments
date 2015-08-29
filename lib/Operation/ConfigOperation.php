@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Operation;
 
-class DeleteOperation extends \ICanBoogie\DeleteOperation
+class ConfigOperation extends \Icybee\Operation\Module\ConfigOperation
 {
 
 }
