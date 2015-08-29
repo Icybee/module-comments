@@ -17,12 +17,12 @@
 		"issues": "https://github.com/Icybee/module-comments/issues",
 		"source": "https://github.com/Icybee/module-comments"
 	},
+	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.5.0",
 		"icanboogie/module-installer": "~1.2.3",
-		"icanboogie/activerecord": "2.x",
 		"brickrouge/css-class-names": "2.x",
-		"icybee/module-nodes": "2.1.x"
+		"icybee/module-nodes": "^3.0.0"
 	},
 	"autoload": {
 		"classmap": [ "lib/" ]

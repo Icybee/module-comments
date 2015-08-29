@@ -1,6 +1,8 @@
 # customization
 
-MODULE_NAME = "Icybee/Modules/Contents"
+PACKAGE_NAME = icybee/module-comments
+PACKAGE_VERSION = 3.0.0
+COMPOSER_ENV = COMPOSER_ROOT_VERSION=$(PACKAGE_VERSION)
 
 # do not edit the following lines
 
@@ -8,28 +10,30 @@ usage:
 	@echo "test:  Runs the test suite.\ndoc:   Creates the documentation.\nclean: Removes the documentation, the dependencies and the Composer files."
 
 vendor:
-	@composer install --dev
+	@$(COMPOSER_ENV) composer install
 
 update:
-	@composer update --dev
+	@$(COMPOSER_ENV) composer update
 
 autoload: vendor
-	@composer dump-autoload
+	@$(COMPOSER_ENV) composer dump-autoload
 
 test: vendor
 	@phpunit
 
-doc: vendor
-	@mkdir -p "docs"
+test-coverage: vendor
+	@mkdir -p build/coverage
+	@phpunit --coverage-html build/coverage
 
-	@apigen \
-	--source ./ \
-	--destination docs/ --title $(MODULE_NAME) \
-	--exclude "*/tests/*" \
-	--exclude "*/composer/*" \
-	--template-config /usr/share/php/data/ApiGen/templates/bootstrap/config.neon
+doc: vendor
+	@mkdir -p build/docs
+	@apigen generate \
+	--source lib \
+	--destination build/docs/ \
+	--title "$(PACKAGE_NAME) v$(PACKAGE_VERSION)" \
+	--template-theme "bootstrap"
 
 clean:
-	@rm -fR docs
+	@rm -fR build
 	@rm -fR vendor
 	@rm -f composer.lock
