@@ -9,14 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Block;
 
 use ICanBoogie\ActiveRecord;
+
+use Icybee\Modules\Comments\Comment;
 
 /**
  * @property Comment $record
  */
-class DeleteBlock extends \Icybee\DeleteBlock
+class DeleteBlock extends \Icybee\Block\DeleteBlock
 {
 	protected function get_record_name()
 	{

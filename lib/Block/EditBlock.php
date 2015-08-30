@@ -9,16 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Block;
 
 use Brickrouge\Element;
 use Brickrouge\Group;
 use Brickrouge\Text;
 
+use Icybee\Modules\Comments\Comment;
+
 /**
  * A block to edit comments.
  */
-class EditBlock extends \Icybee\EditBlock
+class EditBlock extends \Icybee\Block\EditBlock
 {
 	protected function lazy_get_children()
 	{

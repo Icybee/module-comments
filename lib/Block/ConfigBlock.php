@@ -9,17 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Block;
 
 use Brickrouge\Element;
-use Brickrouge\Form;
 use Brickrouge\Group;
 use Brickrouge\Text;
 
 /**
  * Configuration block.
  */
-class ConfigBlock extends \Icybee\ConfigBlock
+class ConfigBlock extends \Icybee\Block\ConfigBlock
 {
 	protected function lazy_get_attributes()
 	{
