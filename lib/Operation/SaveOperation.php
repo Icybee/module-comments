@@ -14,7 +14,7 @@ namespace Icybee\Modules\Comments\Operation;
 use ICanBoogie\Errors;
 use ICanBoogie\Module;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Comments\Comment;
 use Icybee\Modules\Nodes\Node;
 
@@ -26,7 +26,7 @@ use Icybee\Modules\Nodes\Node;
  */
 class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	protected function lazy_get_properties()
 	{

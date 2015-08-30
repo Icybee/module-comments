@@ -15,14 +15,14 @@ use ICanBoogie\ActiveRecord;
 use ICanBoogie\ActiveRecord\Query;
 use ICanBoogie\DateTime;
 
-use Icybee\Binding\ObjectBindings;
+use Icybee\Binding\PrototypedBindings;
 
 /**
  * Comments model.
  */
 class CommentModel extends ActiveRecord\Model
 {
-	use ObjectBindings;
+	use PrototypedBindings;
 
 	/**
 	 * Adds the `status` and `notify` properties if they are not defined, they default to
