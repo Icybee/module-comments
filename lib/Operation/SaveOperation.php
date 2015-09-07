@@ -12,10 +12,10 @@
 namespace Icybee\Modules\Comments\Operation;
 
 use ICanBoogie\Errors;
-use ICanBoogie\Module;
 
 use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Comments\Comment;
+use Icybee\Modules\Comments\Module;
 use Icybee\Modules\Nodes\Node;
 
 /**
@@ -80,7 +80,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 		if ($nid && !$this->app->models['nodes']->exists($nid))
 		{
-			$errors[Comment::NID] = $errors->format('Invalid node identifier: %nid', [ 'nid' => $nid ]);
+			$errors->add(Comment::NID, "Invalid node identifier: %nid", [ 'nid' => $nid ]);
 
 			return false;
 		}
@@ -93,7 +93,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 		{
 			if (!$nid)
 			{
-				$errors[Comment::NID] = $errors->format('The node id is required to create a comment.');
+				$errors->add(Comment::NID, "The node id is required to create a comment.");
 
 				return false;
 			}
@@ -104,7 +104,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 			if ($this->module->model->where('author_ip = ? AND status = "spam"', $request->ip)->rc)
 			{
-				$errors[] = $errors->format('A previous message from your IP was marked as spam.');
+				$errors->add(null, "A previous message from your IP was marked as spam.");
 			}
 		}
 
@@ -112,7 +112,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 		if ($author_url && !filter_var($author_url, FILTER_VALIDATE_URL))
 		{
-			$errors[] = $errors->format('Invalid URL: %url', [ 'url' => $author_url ]);
+			$errors->add(null, "Invalid URL: %url", [ 'url' => $author_url ]);
 		}
 
 		if (!$this->app->user_id)
@@ -135,7 +135,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 			if ($last)
 			{
-				$errors[] = $errors->format("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
+				$errors->add(null, "Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
 			}
 		}
 
