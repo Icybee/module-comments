@@ -388,7 +388,7 @@ EOT
 
 		$model = $app->models['comments'];
 		$entries = $model
-		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (siteid = 0 OR siteid = ?)) IS NOT NULL', $app->site_id)
+		->where('(SELECT 1 FROM {prefix}nodes WHERE nid = comment.nid AND (site_id = 0 OR site_id = ?)) IS NOT NULL', $app->site_id)
 		->order('created_at DESC')->limit(5)->all;
 
 		if (!$entries)

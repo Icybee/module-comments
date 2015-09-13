@@ -1,6 +1,6 @@
 <?php
 
-namespace Icybee\Modules\Comments;
+namespace Icybee\Modules\Comments\Facets;
 
 return [
 
@@ -8,7 +8,7 @@ return [
 
 		'comments' => [
 
-			'nid' => __NAMESPACE__ . '\NidCriterion'
+			'nid' => NidCriterion::class
 
 		]
 	]

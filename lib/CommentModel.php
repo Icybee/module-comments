@@ -117,11 +117,11 @@ class CommentModel extends ActiveRecord\Model
 			$site_id = $app->site_id;
 		}
 
-		$siteid = $app->models['nodes']->select('nid, siteid');
+		$similar_site = $app->models['nodes']->select('nid, site_id');
 
 		return $query
-		->join($siteid, [ 'as' => 'similar_site', 'on' => 'nid' ])
-		->and('siteid = 0 OR siteid = ?', $site_id);
+		->join($similar_site, [ 'as' => 'similar_site', 'on' => 'nid' ])
+		->and('site_id = 0 OR site_id = ?', $site_id);
 	}
 
 	/**

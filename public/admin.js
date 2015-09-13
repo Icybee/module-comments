@@ -13,7 +13,7 @@ document.body.addEvent('click:relay([data-property="status"] .dropdown-menu a)',
 
 	new Request.API({
 
-		url: 'comments/' + key,
+		url: 'comments/' + key + '/status',
 
 		onComplete: function()
 		{
@@ -31,6 +31,6 @@ document.body.addEvent('click:relay([data-property="status"] .dropdown-menu a)',
 			toggle.addClass(classNames[status])
 		}
 
-	}).patch({ status: status })
+	}).put({ status: status })
 
 })

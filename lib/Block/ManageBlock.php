@@ -15,6 +15,7 @@ use ICanBoogie\ActiveRecord\Query;
 
 use Brickrouge\Document;
 
+use Icybee\Block\ManageBlock\DateTimeColumn;
 use Icybee\Modules\Comments\Comment;
 use Icybee\Modules\Nodes\Block\ManageBlock\URLColumn;
 
@@ -28,7 +29,7 @@ class ManageBlock extends \Icybee\Block\ManageBlock
 		$document->js->add(\Icybee\Modules\Comments\DIR . 'public/admin.js');
 	}
 
-	public function __construct($module, array $attributes=[])
+	public function __construct($module, array $attributes = [])
 	{
 		parent::__construct($module, $attributes + [
 
@@ -59,18 +60,20 @@ class ManageBlock extends \Icybee\Block\ManageBlock
 	{
 		return array_merge(parent::get_available_columns(), [
 
-			'comment'           => __CLASS__ . '\CommentColumn',
+			'comment'           => ManageBlock\CommentColumn::class,
 			'url'               => URLColumn::class,
-			'status'            => __CLASS__ . '\StatusColumn',
-			Comment::AUTHOR     => __CLASS__ . '\AuthorColumn',
-			Comment::NID        => __CLASS__ . '\NodeColumn',
-			Comment::CREATED_AT => 'Icybee\Block\ManageBlock\DateTimeColumn'
+			'status'            => ManageBlock\StatusColumn::class,
+			Comment::AUTHOR     => ManageBlock\AuthorColumn::class,
+			Comment::NID        => ManageBlock\NodeColumn::class,
+			Comment::CREATED_AT => DateTimeColumn::class
 
 		]);
 	}
 
 	/**
 	 * Update filters with the `status` modifier.
+	 *
+	 * @inheritdoc
 	 */
 	protected function update_filters(array $filters, array $modifiers)
 	{
@@ -93,6 +96,9 @@ class ManageBlock extends \Icybee\Block\ManageBlock
 		return $filters;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected function alter_query(Query $query, array $filters)
 	{
 		return $query->similar_site;

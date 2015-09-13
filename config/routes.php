@@ -11,9 +11,28 @@
 
 namespace Icybee\Modules\Comments;
 
+use ICanBoogie\HTTP\Request;
+use ICanBoogie\Operation;
+
+use Icybee\Modules\Comments\Operation\StatusOperation;
 use Icybee\Routing\RouteMaker as Make;
 
-return Make::admin('comments', Routing\CommentsAdminController::class, [
+return [
+
+	'api:comments:status' => [
+
+		'pattern' => '/api/comments/<commentid:\d+>/status',
+		'controller' => StatusOperation::class,
+		'via' => Request::METHOD_PUT,
+		'param_translation_list' => [
+
+			'commentid' => Operation::KEY
+
+		]
+
+	]
+
+] + Make::admin('comments', Routing\CommentsAdminController::class, [
 
 	'id_name' => 'commentid'
 

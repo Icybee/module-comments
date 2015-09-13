@@ -20,7 +20,7 @@ use Icybee\Modules\Comments\Comment;
 /**
  * @property Comment $record
  */
-class PatchOperation extends Operation
+class StatusOperation extends Operation
 {
 	protected function get_controls()
 	{
