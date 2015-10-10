@@ -75,9 +75,9 @@ class ManageBlock extends \Icybee\Block\ManageBlock
 	 *
 	 * @inheritdoc
 	 */
-	protected function update_filters(array $filters, array $modifiers)
+	protected function update_filters(array $conditions, array $modifiers)
 	{
-		$filters = parent::update_filters($filters, $modifiers);
+		$conditions = parent::update_filters($conditions, $modifiers);
 
 		if (isset($modifiers['status']))
 		{
@@ -85,15 +85,15 @@ class ManageBlock extends \Icybee\Block\ManageBlock
 
 			if (in_array($value, [ 'approved', 'pending', 'spam' ]))
 			{
-				$filters['status'] = $value;
+				$conditions['status'] = $value;
 			}
 			else if (!$value)
 			{
-				unset($filters['status']);
+				unset($conditions['status']);
 			}
 		}
 
-		return $filters;
+		return $conditions;
 	}
 
 	/**

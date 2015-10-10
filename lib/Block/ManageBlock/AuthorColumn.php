@@ -29,11 +29,11 @@ class AuthorColumn extends Column
 	 *
 	 * @inheritdoc
 	 */
-	public function alter_query_with_filter(Query $query, $filter_value)
+	public function alter_query_with_value(Query $query, $value)
 	{
-		if ($filter_value)
+		if ($value)
 		{
-			$query->filter_by_author_email($filter_value);
+			$query->filter_by_author_email($value);
 		}
 
 		return $query;

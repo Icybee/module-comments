@@ -39,13 +39,12 @@ class NodeColumn extends Column
 	 *
 	 * @inheritdoc
 	 */
-	public function alter_records(array $records)
+	public function alter_records(array &$records)
 	{
 		/* @var $comment_model CommentModel */
 
 		$comment_model = $this->manager->model;
-
-		return $comment_model->including_node($records);
+		$records = $comment_model->including_node($records);
 	}
 
 	/**
