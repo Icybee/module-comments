@@ -1,6 +1,6 @@
 #view-comments-list.empty
 {
-	display: none;	
+	display: none;
 }
 
 #view-comments-list .comment
@@ -78,12 +78,12 @@
 	font-style: italic;
 }
 */
-#view-comments-submit .radio-group.list label
+#view-comments-form .radio-group.list label
 {
 	display: block;
 }
 
-#view-comments-submit .preview
+#view-comments-form .preview
 {
 	padding: 0 1em;
 	border: 1px dashed #ccc;

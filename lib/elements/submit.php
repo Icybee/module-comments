@@ -115,9 +115,9 @@ class SubmitForm extends Form implements AlterFormNotifyParams
 				])
 			],
 
-			Element::WIDGET_CONSTRUCTOR => 'SubmitComment',
+			Element::IS => 'SubmitComment',
 
-			'action' => '#view-comments-submit',
+			'action' => '#view-comments-form',
 			'class' => 'widget-submit-comment',
 			'name' => 'comments/submit'
 
