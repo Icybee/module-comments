@@ -233,4 +233,21 @@ class Comment extends ActiveRecord implements CSSClassNames
 
 		return \Icybee\Kses::sanitizeComment($str);
 	}
+
+	/**
+	 * If {@link created_at} is empty, it is set to `now`. {@link updated_at} is set to `now`.
+	 *
+	 * @return bool|int
+	 */
+	public function save()
+	{
+		if ($this->get_created_at()->is_empty)
+		{
+			$this->set_created_at('now');
+		}
+
+		$this->set_updated_at('now');
+
+		return parent::save();
+	}
 }
