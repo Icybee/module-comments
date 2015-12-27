@@ -12,9 +12,9 @@
 namespace Icybee\Modules\Comments;
 
 use ICanBoogie\ActiveRecord\Query;
-use ICanBoogie\Facets\Fetcher;
+use ICanBoogie\Facets\Fetcher\BasicFetcher;
 
-class ViewProvider extends Fetcher
+class ViewProvider extends BasicFetcher
 {
 	public function alter_query(Query $query)
 	{

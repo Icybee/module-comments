@@ -2,7 +2,7 @@
 
 namespace Icybee\Modules\Comments\Facets;
 
-use ICanBoogie\Facets\DateTimeCriterion;
+use ICanBoogie\Facets\Criterion\DateCriterion;
 
 return [
 
@@ -11,7 +11,7 @@ return [
 		'comments' => [
 
 			'nid' => NidCriterion::class,
-			'created_at' => DateTimeCriterion::class
+			'created_at' => DateCriterion::class
 
 		]
 	]
