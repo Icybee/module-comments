@@ -237,9 +237,9 @@ class Comment extends ActiveRecord implements CSSClassNames
 	/**
 	 * If {@link created_at} is empty, it is set to `now`. {@link updated_at} is set to `now`.
 	 *
-	 * @return bool|int
+	 * @inheritdoc
 	 */
-	public function save()
+	public function save(array $options = [])
 	{
 		if ($this->get_created_at()->is_empty)
 		{
@@ -248,6 +248,6 @@ class Comment extends ActiveRecord implements CSSClassNames
 
 		$this->set_updated_at('now');
 
-		return parent::save();
+		return parent::save($options);
 	}
 }

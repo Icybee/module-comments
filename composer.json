@@ -19,10 +19,13 @@
 	},
 	"minimum-stability": "dev",
 	"require": {
-		"php": ">=5.5.0",
-		"icanboogie/module-installer": "~1.2.3",
-		"brickrouge/css-class-names": "2.x",
-		"icybee/module-nodes": "^3.0.0"
+		"php": "^5.5|^7.0",
+		"icanboogie/module-installer": "^1.2",
+		"brickrouge/css-class-names": "^2.0",
+		"icybee/module-nodes": "^3.0"
+	},
+	"require-dev": {
+		"icybee/core": "^3.0"
 	},
 	"autoload": {
 		"classmap": [ "lib/" ]

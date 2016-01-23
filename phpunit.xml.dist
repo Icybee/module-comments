@@ -12,8 +12,18 @@
          bootstrap="./tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="Icybee/Modules/Comments Test Suite">
+        <testsuite name="icybee/module-comments">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./lib</directory>
+            <exclude>
+                <directory suffix=".php">./lib/Block</directory>
+                <directory suffix=".php">./lib/Routing</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
