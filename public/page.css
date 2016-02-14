@@ -90,6 +90,6 @@
 	margin-bottom: 1em;
 }
 
-form[name="comments/submit"] .control-group--link {
+form[name="comments/submit"] .form-group--link {
 	display: none;
 }

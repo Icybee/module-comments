@@ -48,7 +48,7 @@ class SubmitForm extends Form implements AlterFormNotifyParams
 
 		parent::__construct(\ICanBoogie\array_merge_recursive($attributes, [
 
-			Form::RENDERER => 'Group',
+			Form::RENDERER => Form\GroupRenderer::class,
 			Form::VALUES => $values,
 			Form::HIDDENS => [
 
