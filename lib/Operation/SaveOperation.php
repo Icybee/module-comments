@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Comments\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 
 use Icybee\Binding\PrototypedBindings;
 use Icybee\Modules\Comments\Comment;
@@ -67,7 +67,10 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 		return $properties;
 	}
 
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
 		$request = $this->request;
 
@@ -104,7 +107,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 			if ($this->module->model->where('author_ip = ? AND status = "spam"', $request->ip)->rc)
 			{
-				$errors->add(null, "A previous message from your IP was marked as spam.");
+				$errors->add_generic("A previous message from your IP was marked as spam.");
 			}
 		}
 
@@ -112,7 +115,7 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 		if ($author_url && !filter_var($author_url, FILTER_VALIDATE_URL))
 		{
-			$errors->add(null, "Invalid URL: %url", [ 'url' => $author_url ]);
+			$errors->add_generic("Invalid URL: %url", [ 'url' => $author_url ]);
 		}
 
 		if (!$this->app->user_id)
@@ -135,11 +138,11 @@ class SaveOperation extends \ICanBoogie\Module\Operation\SaveOperation
 
 			if ($last)
 			{
-				$errors->add(null, "Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
+				$errors->add_generic("Les commentaires ne peuvent être faits à moins de $interval minutes d'intervale.");
 			}
 		}
 
-		return !count($errors);
+		return $errors;
 	}
 
 	protected function process()

@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Comments\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Operation;
 
 /**
@@ -19,9 +19,14 @@ use ICanBoogie\Operation;
  */
 class PreviewOperation extends Operation
 {
-	protected function validate(Errors $errors)
+	protected function validate(ErrorCollection $errors)
 	{
-		return !!$this->request['contents'];
+		if (!$this->request['contents'])
+		{
+			$errors->add('contents');
+		}
+
+		return $errors;
 	}
 
 	protected function process()

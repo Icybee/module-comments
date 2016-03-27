@@ -11,7 +11,7 @@
 
 namespace Icybee\Modules\Comments\Operation;
 
-use ICanBoogie\Errors;
+use ICanBoogie\ErrorCollection;
 use ICanBoogie\Module;
 use ICanBoogie\Operation;
 
@@ -31,13 +31,16 @@ class StatusOperation extends Operation
 		] + parent::get_controls();
 	}
 
-	protected function validate(Errors $errors)
+	/**
+	 * @inheritdoc
+	 */
+	protected function validate(ErrorCollection $errors)
 	{
 		$status = $this->request['status'];
 
 		if ($status !== null && !in_array($status, [ Comment::STATUS_APPROVED, Comment::STATUS_PENDING, Comment::STATUS_SPAM ]))
 		{
-			throw new \InvalidArgumentException('Invalid status value: ' . $status);
+			$errors->add('status', "Invalid status value: %status", [ 'status' => $status ]);
 		}
 
 		return $errors;
