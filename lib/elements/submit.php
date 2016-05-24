@@ -70,7 +70,7 @@ class SubmitForm extends Form implements AlterFormNotifyParams
 
 					Element::LABEL => 'E-mail',
 					Element::REQUIRED => true,
-					Element::VALIDATOR => [ 'Brickrouge\Form::validate_email' ]
+					Element::VALIDATION => 'email'
 
 				]),
 
